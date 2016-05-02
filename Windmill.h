@@ -27,11 +27,12 @@ const GLfloat TWO_PI = 6.2832;
 
 class Windmill {
 public:
-	Windmill(GLfloat tr, GLfloat br, GLfloat h, GLfloat rh, glm::vec3 bC, glm::vec3 rC) {
+	Windmill(GLfloat tr, GLfloat br, GLfloat rr, GLfloat h, GLfloat rh, glm::vec3 bC, glm::vec3 rC) {
 		topRad = tr;
 		botRad = br;
 		height = h;
 		roofHeight = rh;
+		roofRadius = rr;
 		baseColor = bC;
 		roofColor = rC;
 	}
@@ -49,9 +50,16 @@ public:
 	}
 
 	void draw(Shader shader) {
+		//Draw the base
 		this->setColor(shader, this->baseColor);
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, indexes.size(), GL_UNSIGNED_INT, 0);
+
+		//Draw the roof
+		this->setColor(shader, this->roofColor);
+		glBindVertexArray(RoofVAO);
+		glDrawElements(GL_TRIANGLES, Roofindexes.size(), GL_UNSIGNED_INT, 0);
+
 	}
 
 	void kill() {
@@ -66,7 +74,7 @@ private:
 	GLuint RoofVBO, RoofVAO, RoofEBO;
 
 	GLuint bufferWidth = 6;
-	GLfloat topRad, botRad, height, roofHeight;
+	GLfloat topRad, botRad, height, roofHeight, roofRadius;
 
 	vector<GLfloat> Roofdata, data;
 	vector<GLuint> Roofindexes, indexes;
@@ -84,9 +92,14 @@ private:
 		printf(text);
 		printf("\n");
 	}
+
 	void populateData() {
+		populateBaseData();
+		populateRoofData();
+	}
+	void populateBaseData() {
 		GLfloat thetaInc = TWO_PI / NODES_IN_CIRCLE;
-		GLfloat theta, x, y, z;
+		GLfloat theta;
 
 		//----------------[ Bottom Circle ]---------------------------------
 		for (GLuint node = 0; node < NODES_IN_CIRCLE; node++) {
@@ -111,7 +124,62 @@ private:
 		this->addToData(0, height, 0); //Top Point
 	}
 
+	void populateRoofData() {
+		GLfloat thetaInc = TWO_PI / NODES_IN_CIRCLE;
+		GLfloat theta;
+		for (GLuint node = 0; node < NODES_IN_CIRCLE; node++) {
+			theta = thetaInc * node;
+			this->addToRoofData(
+				roofRadius * glm::cos(theta),
+				height,
+				roofRadius * glm::sin(theta));
+		}
+		//Add points
+		this->addToRoofData(
+			0,
+			height,
+			0);
+
+		this->addToRoofData(
+			0,
+			height + roofHeight,
+			0);
+	}
+
 	void populateIndicies() {
+		populateBaseIndicies();
+		populateRoofIndicies();
+	}
+
+	void populateRoofIndicies() {
+		GLuint bot_left, bot_right;
+		GLuint topmid = NODES_IN_CIRCLE;
+		GLuint botmid = NODES_IN_CIRCLE+1;
+
+		//---------------[ Shell - Bot Face]-----------------------
+		for (bot_left = 0; bot_left < NODES_IN_CIRCLE - 1; bot_left++) {
+			addToRoofIndexes(
+				bot_left,
+				bot_left + 1,//bot right
+				botmid);
+		}
+		addToRoofIndexes(
+			NODES_IN_CIRCLE - 1,//bot right
+			0, //bot left
+			botmid);
+		//---------------[ Shell - Cone]-----------------------
+		for (bot_left = 0; bot_left < NODES_IN_CIRCLE - 1; bot_left++) {
+			addToRoofIndexes(
+				bot_left,
+				bot_left + 1,//bot right
+				topmid);
+		}
+		addToRoofIndexes(
+			NODES_IN_CIRCLE - 1,//bot right
+			0, //bot left
+			topmid);
+	}
+	void populateBaseIndicies() {
 		GLuint bot_left, bot_right, top_left, top_right;
 		
 		//---------------[ Shell - no overlap]-----------------------
@@ -187,6 +255,11 @@ private:
 	}
 
 	void makeBuffers() {
+		makeBaseBuffer();
+		makeRoofBuffer();
+	}
+
+	void makeBaseBuffer() {
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
 		glGenBuffers(1, &EBO);
@@ -214,6 +287,34 @@ private:
 		println("WINDMILL::BUFFERS::DONE");
 	}
 
+	void makeRoofBuffer() {
+		glGenVertexArrays(1, &RoofVAO);
+		glGenBuffers(1, &RoofVBO);
+		glGenBuffers(1, &RoofEBO);
+
+		glBindVertexArray(RoofVAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, RoofVBO);
+		glBufferData(GL_ARRAY_BUFFER, Roofdata.size() * sizeof(GLfloat), &Roofdata[0], GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, RoofEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, Roofindexes.size() * sizeof(GLuint), &Roofindexes[0], GL_STATIC_DRAW);
+
+		// Position attribute
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+		glEnableVertexAttribArray(0);
+
+		//// Normal attribute
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(1);
+
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
+
+		glBindVertexArray(0); // Unbind VAO
+	}
+
+
 	void addToData(GLfloat x, GLfloat y, GLfloat z) {
 		data.push_back(x);
 		data.push_back(y);
@@ -227,14 +328,14 @@ private:
 	}
 
 	void addToRoofData(GLfloat x, GLfloat y, GLfloat z) {
-		data.push_back(x);
-		data.push_back(y);
-		data.push_back(z);
+		Roofdata.push_back(x);
+		Roofdata.push_back(y);
+		Roofdata.push_back(z);
 
 		//Add the normal
-		data.push_back(x);//dx = x - x0 = x - 0
-		data.push_back(y - height +(roofHeight/2));//dy = y - y0 = y - h/2
-		data.push_back(z);//dz = z - z0 = z - 0
+		Roofdata.push_back(x);//dx = x - x0 = x - 0
+		Roofdata.push_back(y - height +(roofHeight/2));//dy = y - y0 = y - h/2
+		Roofdata.push_back(z);//dz = z - z0 = z - 0
 
 	}
 
@@ -246,9 +347,9 @@ private:
 	}
 
 	void addToRoofIndexes(GLfloat p1, GLfloat p2, GLfloat p3) {
-		indexes.push_back(p1);
-		indexes.push_back(p2);
-		indexes.push_back(p3);
+		Roofindexes.push_back(p1);
+		Roofindexes.push_back(p2);
+		Roofindexes.push_back(p3);
 	}
 
 

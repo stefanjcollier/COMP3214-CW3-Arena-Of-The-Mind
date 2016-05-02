@@ -182,7 +182,7 @@ int main()
 	Shader fancyLightShader("shader.vs", "lightShader.frag");
 	Sphere genericSphere(nodes);
 
-	Windmill windmill(12, 16, 50, 1, glm::vec3(0.75f,0.75f,0.0f), glm::vec3(0.75f, 0.1f, 0.0f) );
+	Windmill windmill(12, 16, 14, 50, 10, glm::vec3(0.75f,0.75f,0.0f), glm::vec3(0.75f, 0.1f, 0.0f) );
 	windmill.instantiate();
 
 	Cube cube(3);
@@ -497,7 +497,6 @@ int main()
 		}
 		//printf("%f %f %f %f %f %f %f %f %f\n", allPos[0], allPos[1], allPos[2], allPos[3], allPos[4], allPos[5], allPos[6], allPos[7], allPos[8]);
 		glBindVertexArray(0);
-		glUniform3f(objectColorLoc, 0.75f, 0.75f, 0.0f);
 
 			glm::mat4 model;
 			glm::vec3 pos = glm::vec3(-10.0f, 0.0f, -3.0f);
@@ -511,6 +510,7 @@ int main()
 
 			model = glm::translate(model, glm::vec3(-20.0f, 0.0f, 0.0f));
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+			glUniform3f(objectColorLoc, 0.75f, 0.75f, 0.0f);
 
 			glBindVertexArray(VAO);
 			glDrawElements(GL_TRIANGLES, indicesIndex, GL_UNSIGNED_INT, 0);
