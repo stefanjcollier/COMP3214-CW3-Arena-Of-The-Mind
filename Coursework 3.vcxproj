@@ -125,6 +125,7 @@
     <None Include="shaders\textureShader.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Butterfly.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Windmill.h" />
     <ClInclude Include="include\Camera.h" />

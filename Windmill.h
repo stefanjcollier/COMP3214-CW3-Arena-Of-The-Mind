@@ -66,6 +66,11 @@ public:
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
 		glDeleteBuffers(1, &EBO);
+
+		glDeleteVertexArrays(1, &RoofVAO);
+		glDeleteBuffers(1, &RoofVBO);
+		glDeleteBuffers(1, &RoofEBO);
+
 	}
 	
 
