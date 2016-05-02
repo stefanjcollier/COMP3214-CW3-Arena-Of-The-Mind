@@ -23,11 +23,13 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Sphere.h"
+#include "World.h"
+#include "Windmill.h"
+#include "Cube.h"
 
 //Bullet Includes
 #include "btBulletDynamicsCommon.h"
 #include <stdio.h>
-#include "World.h"
 
 
 
@@ -51,7 +53,7 @@ bool keys[1024];
 bool showPos = true;
 
 // Light attributes
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+glm::vec3 lightPos(50.0f, 100.0f, 2.0f);
 
 // Deltatime
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
@@ -179,6 +181,13 @@ int main()
 	// Build and compile our shader program
 	Shader fancyLightShader("shader.vs", "lightShader.frag");
 	Sphere genericSphere(nodes);
+
+	Windmill windmill(12, 16, 50, 1, glm::vec3(0.75f,0.75f,0.0f), glm::vec3(0.75f, 0.1f, 0.0f) );
+	windmill.instantiate();
+
+	Cube cube(3);
+	cube.instantiate();
+
 	/**************************************************************
 	********************[  Bullet Def's   ]***********************
 	***************************************************************/
@@ -262,17 +271,17 @@ int main()
 	dynamicsWorld->addRigidBody(topRigidBody);
 	StaticBits.push_back(topRigidBody);
 
-
 	/**************************************************************
 	********************[  Bullet Objects   ]***********************
 	*******************[  2x Spheres & Cube   ]*********************
 	***************************************************************/
-	MovingBits.push_back(SetSphere(5., -10, 25, 0));
-	MovingBits.push_back(SetSphere(5., -10, 25, 0));
-	MovingBits.push_back(  SetCube(5., -10, 25, 0));
+	MovingBits.push_back(SetSphere(5., 10, 25, -10));
+	MovingBits.push_back(SetSphere(5., 10, 26, -10));
+	MovingBits.push_back(SetSphere(5., 10, 10, -10));
+	MovingBits.push_back(  SetCube(5., 9, 24, -10));
 
-	printf("Static Obejcts: %d\n", StaticBits.size());
-	printf("Moving Obejcts: %d\n", MovingBits.size());
+	//printf("Static Obejcts: %d\n", StaticBits.size());
+	//printf("Moving Obejcts: %d\n", MovingBits.size());
 
 	/**************************************************************
 	********************[  Graphics Objs Setup ]*******************
@@ -327,9 +336,9 @@ int main()
 	glEnableVertexAttribArray(2);
 
 	glBindVertexArray(0); // Unbind VAO
-	/**************************************************************
-    ********************[  Cube ]**************************
-    ***************************************************************/
+#	/**************************************************************
+	********************[  Cube ]**************************
+	***************************************************************/
 	// Set up vertex data (and buffer(s)) and attribute pointers
 	GLfloat vertices2[] = {
 		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -374,6 +383,11 @@ int main()
 		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};
+	vector<GLfloat> data;
+	for (GLuint item = 0; item < 180; item++) {
+		data.push_back(vertices2[item]);
+	}
+
 	// World space positions of our cubes
 	GLuint VBO2, VAO2;
 	glGenVertexArrays(1, &VAO2);
@@ -382,7 +396,8 @@ int main()
 	glBindVertexArray(VAO2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*data.size(), &data[0], GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
 
 	// Position attribute
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
@@ -393,7 +408,8 @@ int main()
 
 	glBindVertexArray(0); // Unbind VAO
 
-	/**************************************************************
+
+		/**************************************************************
 	******************[  Others  Stuff ]****************************
 	***************************************************************/
 	glm::vec3 colours[4] = {
@@ -444,7 +460,7 @@ int main()
 		***************************************************************/
 		// Camera/View transformation
 		glm::mat4 view;
-		view = glm::translate(camera.GetViewMatrix(), glm::vec3(0.0f, 0.0f, -3.0f));
+		view = glm::translate(camera.GetViewMatrix(), glm::vec3(-10.0f, 25.0f, -3.0f));
 		glm::mat4 projection = glm::perspective(camera.Zoom, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
 		// Get the uniform locations
 		GLint modelLoc = glGetUniformLocation(fancyLightShader.Program, "model");
@@ -462,7 +478,7 @@ int main()
 		fancyLightShader.Use();
 
 		glBindVertexArray(VAO);
-		GLfloat allPos[9];
+		GLfloat allPos[99];
 		for (GLuint modelNo = 0; modelNo < MovingBits.size(); modelNo++) {
 			glm::vec3 col = colours[modelNo];
 			glUniform3f(objectColorLoc, col.x, col.y, col.z);
@@ -479,8 +495,29 @@ int main()
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			glDrawElements(GL_TRIANGLES, indicesIndex, GL_UNSIGNED_INT, 0);
 		}
-		printf("%f %f %f %f %f %f %f %f %f\n", allPos[0], allPos[1], allPos[2], allPos[3], allPos[4], allPos[5], allPos[6], allPos[7], allPos[8]);
+		//printf("%f %f %f %f %f %f %f %f %f\n", allPos[0], allPos[1], allPos[2], allPos[3], allPos[4], allPos[5], allPos[6], allPos[7], allPos[8]);
 		glBindVertexArray(0);
+		glUniform3f(objectColorLoc, 0.75f, 0.75f, 0.0f);
+
+			glm::mat4 model;
+			glm::vec3 pos = glm::vec3(-10.0f, 0.0f, -3.0f);
+			model = glm::translate(model, pos);
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+			//cube.draw();
+			windmill.draw(fancyLightShader);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+			model = glm::translate(model, glm::vec3(-20.0f, 0.0f, 0.0f));
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+			glBindVertexArray(VAO);
+			glDrawElements(GL_TRIANGLES, indicesIndex, GL_UNSIGNED_INT, 0);
+			glBindVertexArray(0);
+
+		
+
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
@@ -489,9 +526,15 @@ int main()
 	// Properly de-allocate all resources once they've outlived their purpose
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	glDeleteVertexArrays(1, &VAO2);
-	glDeleteBuffers(1, &VBO2);
 	glDeleteBuffers(1, &EBO);
+
+	glDeleteVertexArrays(1, &VAO2);
+	glDeleteVertexArrays(1, &VBO2);
+
+
+	windmill.kill();
+	cube.kill();
+
 	//Clean up the bullet stuff
 	bullet_close();
 	// Terminate GLFW, clearing any resources allocated by GLFW.
