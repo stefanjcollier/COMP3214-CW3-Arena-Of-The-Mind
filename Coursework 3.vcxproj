@@ -127,6 +127,7 @@
     <ClInclude Include="include\Sphere.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\World.h" />
+    <ClInclude Include="Wing.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\lightShader.frag" />

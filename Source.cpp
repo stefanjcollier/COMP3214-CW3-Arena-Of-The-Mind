@@ -24,6 +24,7 @@
 #include "Windmill.h"
 #include "Cube.h"
 #include "Butterfly.h"
+#include "Wing.h"
 
 //Bullet Includes
 #include "btBulletDynamicsCommon.h"
@@ -192,8 +193,10 @@ int main()
 	cube.instantiate();
 
 	Butterfly butter(15,9,glm::vec3(0.25f,0.5f,0.0f));
-	butter.instantiate();
+	Wing wing(15, 9);
 
+	butter.instantiate();
+	wing.instantiate();
 	/**************************************************************
 	********************[  Bullet Def's   ]***********************
 	***************************************************************/
@@ -558,9 +561,29 @@ int main()
 
 
 			textureShader.Use();
-			glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(model));
-			//cube.draw(textureShader);
-			butter.draw(textureShader);
+			glm::mat4 wingModel1;
+			glm::mat4 wingModel2;
+			glm::vec3 wingPos = glm::vec3(15.0f, 5.0f, 5.0f);
+
+			wingModel1 = glm::translate(wingModel1, wingPos);
+			wingModel2 = glm::translate(wingModel2, wingPos);
+			wingModel2 = glm::rotate(wingModel2, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+			GLfloat angle = glm::sin(glfwGetTime()*3);
+			if (angle > 0) {
+				angle = angle*-1;
+			}
+
+			wingModel1 = glm::rotate(wingModel1, float(angle), glm::vec3(0.0f, 1.0f, 0.0f));
+			wingModel2 = glm::rotate(wingModel2, -float(angle), glm::vec3(0.0f, 1.0f, 0.0f));
+
+			//glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(wingModel));
+
+			glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(wingModel1));
+			wing.draw(textureShader);
+
+			glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(wingModel2));
+			wing.draw(textureShader);
 
 			//---------------------------------------------------------
 			/*
@@ -605,6 +628,7 @@ int main()
 	windmill.kill();
 	cube.kill();
 	butter.kill();
+	wing.kill();
 
 	//Clean up the bullet stuff
 	bullet_close();
