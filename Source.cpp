@@ -177,6 +177,7 @@ int main()
 
 	// Setup OpenGL options
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
 
 	// Build and compile our shader program
 	Shader fancyLightShader("resources/shaders/lightShader.vs", "resources/shaders/lightShader.frag");
@@ -418,14 +419,22 @@ int main()
 
 	// Set texture filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	// Load, create texture and generate mipmaps
 	int width, height, comp;
-	unsigned char* image = stbi_load("container.jpg", &width, &height, &comp, STBI_rgb);
+	unsigned char* image = stbi_load("orange_wing.png", &width, &height, &comp, STBI_rgb_alpha);
 	if (image == nullptr)
 		throw(std::string("Failed to load texture"));
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+	if (comp == 3) {
+		printf("TEXTURE::1::RGB\n");
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	}
+	else if (comp == 4) {
+		printf("TEXTURE::1::RGBA\n");
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	}
 	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(image);
 	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
