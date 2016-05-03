@@ -125,6 +125,7 @@
     <ClInclude Include="include\objects\Windmill.h" />
     <ClInclude Include="include\Shader.h" />
     <ClInclude Include="include\Sphere.h" />
+    <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\World.h" />
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +133,10 @@
     <None Include="resources\shaders\shader.vs" />
     <None Include="resources\shaders\textureShader.frag" />
     <None Include="resources\shaders\textureShader.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\textures\blue_wing.png" />
+    <Image Include="resources\textures\orange_wing.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,8 @@
 #ifndef BUTTERFLY_H
 #define BUTTERFLY_H
 
+
+
 // GLM Mathematics
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -38,10 +40,17 @@ public:
 		populateDataAndIndices();
 		//fill the buffers
 		makeBuffers();
+
+		prepareTexture();	
 	}
 
-	void draw(Shader shader) {
-		this->setColor(shader, this->mycolor);
+	void draw(Shader textureshader) {
+		// Bind Textures using texture units
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, this->texture);
+		glUniform1i(glGetUniformLocation(textureshader.Program, "ourTexture"), 0);
+
+		//Draw
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, indexes.size(), GL_UNSIGNED_INT, 0);
 	}
@@ -65,6 +74,7 @@ private:
 	vector<GLuint>  indexes;
 
 	glm::vec3 mycolor;
+	GLuint texture;
 
 
 	void setColor(Shader shader, glm::vec3 color) {
@@ -95,6 +105,32 @@ private:
 		this->addToIndexes(4, 7, 6);
 	}
 
+	void prepareTexture() {
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, this->texture); 
+		// All upcoming GL_TEXTURE_2D operations now have effect on our texture object
+
+		// Set our texture parameters
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		// Set texture filtering
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		// Load, create texture and generate mipmaps
+		int w, h, c;
+		unsigned char* image = stbi_load("container.jpg", &w, &h, &c, STBI_rgb);
+//		unsigned char* image = stbi_load("orange_wing.png", &w, &h, &c, STBI_rgb_alpha);
+
+		if (image == nullptr)
+			throw(std::string("Failed to load texture"));
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		stbi_image_free(image);
+		glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
+	}
+
 
 
 	void makeBuffers() {
@@ -115,7 +151,7 @@ private:
 		glEnableVertexAttribArray(0);
 
 		/// Texture Coord attribute
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(2);
 
 

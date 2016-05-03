@@ -1,19 +1,14 @@
-#include <iostream>
-
 /**************************************************************
 ********************[  Imports   ]*****************************
 ***************************************************************/
-// GLEW
 #define GLEW_STATIC
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ASSERT(x)
 
+// GLEW
 #include <GL/glew.h>
-
 // GLFW
 #include <GLFW/glfw3.h>
-
-
 // GLM Mathematics
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -24,6 +19,7 @@
 #include "Camera.h"
 #include "Sphere.h"
 #include "World.h"
+#include "stb_image.h"
 
 #include "Windmill.h"
 #include "Cube.h"
@@ -32,6 +28,8 @@
 //Bullet Includes
 #include "btBulletDynamicsCommon.h"
 #include <stdio.h>
+#include <iostream>
+
 
 
 
@@ -287,8 +285,6 @@ int main()
 	MovingBits.push_back(SetSphere(5., 10, 10, -10));
 	MovingBits.push_back(  SetCube(5., 9, 24, -10));
 
-	//printf("Static Obejcts: %d\n", StaticBits.size());
-	//printf("Moving Obejcts: %d\n", MovingBits.size());
 
 	/**************************************************************
 	********************[  Graphics Objs Setup ]*******************
@@ -344,7 +340,9 @@ int main()
 
 	glBindVertexArray(0); // Unbind VAO
 
-						  /**************************************************************
+
+
+	/**************************************************************
 	******************[  Others  Stuff ]****************************
 	***************************************************************/
 	glm::vec3 colours[4] = {
@@ -406,6 +404,20 @@ int main()
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
+
+		textureShader.Use();
+		// Get the uniform locations
+		GLint texModelLoc = glGetUniformLocation(textureShader.Program, "model");
+		GLint texviewLoc = glGetUniformLocation(textureShader.Program, "view");
+		GLint texprojLoc = glGetUniformLocation(textureShader.Program, "projection");
+		GLint vtexViewPosLoc = glGetUniformLocation(fancyLightShader.Program, "viewPos");
+
+		// Pass the matrices to the shader
+		glUniformMatrix4fv(texviewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(texprojLoc, 1, GL_FALSE, glm::value_ptr(projection));
+		glUniform3f(vtexViewPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
+
+
 		/**************************************************************
 		********************[  Drawing Time! ]*******************
 		***************************************************************/
@@ -430,8 +442,9 @@ int main()
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			glDrawElements(GL_TRIANGLES, indicesIndex, GL_UNSIGNED_INT, 0);
 		}
-		//printf("%f %f %f %f %f %f %f %f %f\n", allPos[0], allPos[1], allPos[2], allPos[3], allPos[4], allPos[5], allPos[6], allPos[7], allPos[8]);
 		glBindVertexArray(0);
+
+		fancyLightShader.Use();
 
 			glm::mat4 model;
 			glm::vec3 pos = glm::vec3(-10.0f, 0.0f, -3.0f);
@@ -440,14 +453,16 @@ int main()
 
 			windmill.draw(fancyLightShader);
 
-			model = glm::translate(model, glm::vec3(-20.0f, 0.0f, 0.0f));
+			model = glm::translate(model, glm::vec3(-20.0f, 20.0f, 0.0f));
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			glUniform3f(objectColorLoc, 0.75f, 0.75f, 0.0f);
-			//cube.draw();
-			butter.draw(fancyLightShader);
+			textureShader.Use();
+			cube.draw(textureShader);
+			//butter.draw(textureShader);
+			fancyLightShader.Use();
 
-			model = glm::translate(model, glm::vec3(-20.0f, 0.0f, 0.0f));
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+			glm::mat4 model2 = glm::translate(model, glm::vec3(-20.0f, -20.0f, 0.0f));
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model2));
 			glUniform3f(objectColorLoc, 0.75f, 0.75f, 0.0f);
 
 			glBindVertexArray(VAO);

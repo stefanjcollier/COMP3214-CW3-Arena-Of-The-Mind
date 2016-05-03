@@ -37,7 +37,6 @@ public:
 	 * Create the data
 	 */
 	void instantiate() {
-		println("WINDMILL::INSTANTIATE");
 		//Make the data
 		populateData();
 		populateIndicies();
@@ -92,11 +91,6 @@ private:
 		glUniform3f(objectColorLoc, color.x, color.y, color.z);
 	}
 
-
-	void println(GLchar* text) {
-		printf(text);
-		printf("\n");
-	}
 
 	void populateData() {
 		populateBaseData();
@@ -289,7 +283,6 @@ private:
 		glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
 
 		glBindVertexArray(0); // Unbind VAO
-		println("WINDMILL::BUFFERS::DONE");
 	}
 
 	void makeRoofBuffer() {
