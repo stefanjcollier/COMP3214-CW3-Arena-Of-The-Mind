@@ -65,9 +65,6 @@
     <ClInclude Include="include\objects\SmallOrangeButterfly.h">
       <Filter>Header Files\butterflies</Filter>
     </ClInclude>
-    <ClInclude Include="OrangeWing.h">
-      <Filter>Header Files\butterflies</Filter>
-    </ClInclude>
     <ClInclude Include="include\objects\Ground.h">
       <Filter>Header Files\objects</Filter>
     </ClInclude>
@@ -75,6 +72,9 @@
       <Filter>Header Files\objects</Filter>
     </ClInclude>
     <ClInclude Include="include\objects\LargeOrangeButterFly.h">
+      <Filter>Header Files\butterflies</Filter>
+    </ClInclude>
+    <ClInclude Include="include\objects\ButterflyFlock.h">
       <Filter>Header Files\butterflies</Filter>
     </ClInclude>
   </ItemGroup>

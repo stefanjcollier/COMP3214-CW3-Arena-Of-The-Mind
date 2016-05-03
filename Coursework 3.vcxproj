@@ -121,6 +121,7 @@
   <ItemGroup>
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\objects\BlueWing.h" />
+    <ClInclude Include="include\objects\ButterflyFlock.h" />
     <ClInclude Include="include\objects\Cube.h" />
     <ClInclude Include="include\objects\Ground.h" />
     <ClInclude Include="include\objects\Island.h" />
@@ -133,7 +134,6 @@
     <ClInclude Include="include\Sphere.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\World.h" />
-    <ClInclude Include="OrangeWing.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\lightShader.frag" />

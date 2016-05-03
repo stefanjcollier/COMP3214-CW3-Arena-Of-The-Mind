@@ -28,6 +28,7 @@
 #include "LargeBlueButterFly.h"
 #include "SmallOrangeButterFly.h"
 #include "SmallBlueButterFly.h"
+#include "ButterflyFlock.h"
 
 #include "Island.h"
 
@@ -52,7 +53,7 @@ void do_movement();
 const GLuint WIDTH = 2*800, HEIGHT = 2*600;
 
 // Camera
-Camera  camera(glm::vec3(-30.0f, 25.0f, 50.0f));
+Camera  camera(glm::vec3(-8.0f, 27.5f, 12.0f));
 GLfloat lastX = WIDTH / 2.0;
 GLfloat lastY = HEIGHT / 2.0;
 bool keys[1024];
@@ -205,6 +206,9 @@ int main()
 	lbbutter.instantiate();
 	sobutter.instantiate();
 	sbbutter.instantiate();
+
+	ButterflyFlock flock1(2.0f, 1.8f, glm::vec3(-5.0f, 2.0f, 0.0f), 6);
+	flock1.instantiate();
 
 	Island island;
 	island.instantiate();
@@ -468,7 +472,7 @@ int main()
 			model1 = glm::translate(model1, pos);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model1));
 			windmill.draw(fancyLightShader);
-			lobutter.draw(textureShader, butter_offset, -8, glm::vec3(0.0f, 0.0f, 1.0f), 0.7, 30);
+			lobutter.draw(textureShader, butter_offset, glm::radians(-8.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.7, 30);
 
 			fancyLightShader.Use();
 			glm::mat4 model2;
@@ -476,21 +480,24 @@ int main()
 			model2 = glm::translate(model2, pos);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model2));
 			windmill.draw(fancyLightShader);
-			lbbutter.draw(textureShader, pos+butter_offset, 0, glm::vec3(0.0f, 0.0f, 0.0f), 0.9, 0);
+			lbbutter.draw(textureShader, pos+butter_offset, 0.0f, glm::vec3(0.0f, 0.0f, 0.0f), 0.9, 0);
 
 
 			fancyLightShader.Use();
 			glm::mat4 model3;
-			pos = glm::vec3(-6.0f, 0.0f, -25.0f);
+			pos = glm::vec3(-14.0f, 0.0f, -25.0f);
 			model3 = glm::translate(model3, pos);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model3));
 			windmill.draw(fancyLightShader);
-			lbbutter.draw(textureShader, pos + butter_offset, 30, glm::vec3(0.0f, 0.0f, 1.0f), 0.5, 85);
+			lbbutter.draw(textureShader, pos + butter_offset, glm::radians(30.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.5, 85);
+
+
+			flock1.draw(textureShader);
 
 
 			//Transparent objects are drawn last
-			sbbutter.draw(textureShader, glm::vec3(2.0f, 1.2f, 2.4), 0, glm::vec3(0.0f, 1.0f, 0.0f), 5, 30);
-			sobutter.draw(textureShader, glm::vec3(2.5f, 1.0f, 2.6), 0, glm::vec3(0.0f, 1.0f, 0.0f), 5, 60);
+			sbbutter.draw(textureShader, glm::vec3(2.0f, 1.2f, 2.4), 0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 5, 30);
+			sobutter.draw(textureShader, glm::vec3(2.5f, 1.0f, 2.6), 0.0f, glm::vec3(0.0f, 1.0f, 0.0f), 5, 60);
 
 
 
@@ -506,11 +513,16 @@ int main()
 
 	windmill.kill();
 	cube.kill();
+
 	lobutter.kill();
 	lbbutter.kill();
 	sobutter.kill();
 	sbbutter.kill();
+
+	flock1.kill();
+
 	island.kill();
+
 
 	//Clean up the bullet stuff
 	bullet_close();
