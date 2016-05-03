@@ -20,7 +20,7 @@ public:
 		smallBWing.instantiate();
 	}
 
-	void draw(Shader textureShader, glm::vec3 centre, GLfloat speed, GLfloat offsetDegrees) {
+	void draw(Shader textureShader, glm::vec3 centre, GLfloat degrees, glm::vec3 axis, GLfloat speed, GLfloat offsetDegrees) {
 		//Find the texture location attribute
 		textureShader.Use();
 		GLint texModelLoc = glGetUniformLocation(textureShader.Program, "model");
@@ -31,6 +31,11 @@ public:
 
 		wingModel1 = glm::translate(wingModel1, centre);
 		wingModel2 = glm::translate(wingModel2, centre);
+		if (degrees != 0) {
+			wingModel1 = glm::rotate(wingModel1, glm::radians(degrees), axis);
+			wingModel2 = glm::rotate(wingModel2, glm::radians(degrees), axis);
+		}
+
 		wingModel2 = glm::rotate(wingModel2, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 		GLfloat angle = glm::sin(glfwGetTime() * speed + glm::radians(offsetDegrees));//Keeps it to 0 -> 90deg rather that 0 -> 180deg

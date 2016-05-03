@@ -458,24 +458,39 @@ int main()
 		}
 		glBindVertexArray(0);
 
-			fancyLightShader.Use();
 
 			island.draw(fancyLightShader);
 
-			
-			glm::mat4 model;
+			fancyLightShader.Use();
+			glm::mat4 model1;
 			glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
-			model = glm::translate(model, pos);
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+			glm::vec3 butter_offset = glm::vec3(0.0f, 3.0f, 1.8f);
+			model1 = glm::translate(model1, pos);
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model1));
 			windmill.draw(fancyLightShader);
-			lobutter.draw(textureShader, glm::vec3(0.0f, 3.0f, 1.8f), 0.7, 0);
+			lobutter.draw(textureShader, butter_offset, -8, glm::vec3(0.0f, 0.0f, 1.0f), 0.7, 30);
 
+			fancyLightShader.Use();
+			glm::mat4 model2;
+			pos = glm::vec3(13.0f, 0.0f, -12.0f);
+			model2 = glm::translate(model2, pos);
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model2));
+			windmill.draw(fancyLightShader);
+			lbbutter.draw(textureShader, pos+butter_offset, 0, glm::vec3(0.0f, 0.0f, 0.0f), 0.9, 0);
+
+
+			fancyLightShader.Use();
+			glm::mat4 model3;
+			pos = glm::vec3(-6.0f, 0.0f, -25.0f);
+			model3 = glm::translate(model3, pos);
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model3));
+			windmill.draw(fancyLightShader);
+			lbbutter.draw(textureShader, pos + butter_offset, 30, glm::vec3(0.0f, 0.0f, 1.0f), 0.5, 85);
 
 
 			//Transparent objects are drawn last
-			lbbutter.draw(textureShader, glm::vec3(5.0f, 5.0f, 12.0f), 3, 45);
-			sbbutter.draw(textureShader, glm::vec3(2.0f, 1.6f, 2.4), 5, 30);
-			sobutter.draw(textureShader, glm::vec3(2.0f, 2.0f, 2.6), 5, 60);
+			sbbutter.draw(textureShader, glm::vec3(2.0f, 1.2f, 2.4), 0, glm::vec3(0.0f, 1.0f, 0.0f), 5, 30);
+			sobutter.draw(textureShader, glm::vec3(2.5f, 1.0f, 2.6), 0, glm::vec3(0.0f, 1.0f, 0.0f), 5, 60);
 
 
 

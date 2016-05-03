@@ -45,6 +45,8 @@ public:
 	}
 
 	void draw(Shader shader) {
+		shader.Use();
+
 		//Draw the base
 		this->setColor(shader, this->baseColor);
 		glBindVertexArray(VAO);
