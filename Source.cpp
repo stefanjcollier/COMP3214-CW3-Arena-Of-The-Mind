@@ -180,6 +180,8 @@ int main()
 
 	// Build and compile our shader program
 	Shader fancyLightShader("resources/shaders/lightShader.vs", "resources/shaders/lightShader.frag");
+	Shader textureShader("resources/shaders/textureShader.vs", "resources/shaders/textureShader.frag");
+
 	Sphere genericSphere(nodes);
 
 	Windmill windmill(12, 16, 14, 50, 10, glm::vec3(0.75f,0.75f,0.0f), glm::vec3(0.75f, 0.1f, 0.0f) );

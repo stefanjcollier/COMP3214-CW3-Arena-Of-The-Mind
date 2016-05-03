@@ -21,14 +21,15 @@ using namespace std;
 
 
 
-const GLuint NODES_IN_CIRCLE = 20;
 const GLfloat PI = 3.1415;
 const GLfloat TWO_PI = 6.2832;
 
 class Butterfly {
 public:
-	Butterfly(glm::vec3 color) {
-
+	Butterfly(GLfloat wingHeight, GLfloat wingWidth, glm::vec3 color) {
+		this->width = wingWidth;
+		this->height = wingHeight;
+		this->mycolor = color;
 	}
 
 	/*
@@ -36,14 +37,15 @@ public:
 	*/
 	void instantiate() {
 		//Make the data
-		populateData();
-		populateIndicies();
+		populateDataAndIndices();
 		//fill the buffers
 		makeBuffers();
 	}
 
 	void draw(Shader shader) {
-
+		this->setColor(shader, this->mycolor);
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, indexes.size(), GL_UNSIGNED_INT, 0);
 	}
 
 	void kill() {
@@ -56,13 +58,12 @@ public:
 private:
 	GLuint VBO, VAO, EBO;
 
-	GLuint bufferWidth = 6;
-	GLfloat topRad, botRad, height, roofHeight, roofRadius;
+	GLfloat height, width;
 
 	vector<GLfloat>  data;
 	vector<GLuint>  indexes;
 
-	glm::vec3 baseColor, roofColor;
+	glm::vec3 mycolor;
 
 
 	void setColor(Shader shader, glm::vec3 color) {
@@ -71,12 +72,28 @@ private:
 	}
 
 
-	void populateData() {
-	
+	void populateDataAndIndices() {
+		//Right Wing
+		GLfloat x_off = 0.1;
+		this->addToData(x_off + 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+		this->addToData(x_off + 0.0f, height, 0.0f, 0.0f, 0.0f);
+		this->addToData(x_off + width, height, 0.0f, 0.0f, 0.0f);
+		this->addToData(x_off + width, 0, 0.0f, 0.0f, 0.0f);
+
+		this->addToIndexes(0, 1, 2);
+		this->addToIndexes(0, 3, 2);
+
+		//Left Wing
+		x_off = -0.1;
+		this->addToData(x_off + 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+		this->addToData(x_off + 0.0f, height, 0.0f, 0.0f, 0.0f);
+		this->addToData(x_off - width, height, 0.0f, 0.0f, 0.0f);
+		this->addToData(x_off - width, 0, 0.0f, 0.0f, 0.0f);
+
+		this->addToIndexes(4, 5, 6);
+		this->addToIndexes(4, 7, 6);
 	}
 
-	void populateIndicies() {
-	}
 
 
 	void makeBuffers() {
@@ -92,31 +109,27 @@ private:
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexes.size() * sizeof(GLuint), &indexes[0], GL_STATIC_DRAW);
 
-		// Position attribute
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+		/// Position attribute
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
 		glEnableVertexAttribArray(0);
 
-		//// Normal attribute
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-		glEnableVertexAttribArray(1);
+		/// Texture Coord attribute
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(2);
 
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
 
 		glBindVertexArray(0); // Unbind VAO
 	}
 
 
-	void addToData(GLfloat x, GLfloat y, GLfloat z) {
+	void addToData(GLfloat x, GLfloat y, GLfloat z, GLfloat tx, GLfloat ty) {
+		//Position
 		data.push_back(x);
 		data.push_back(y);
 		data.push_back(z);
-
-		//Add the normal
-		data.push_back(x);//dx = x - x0 = x - 0
-		data.push_back(y - height / 2);//dy = y - y0 = y - h/2
-		data.push_back(z);//dz = z - z0 = z - 0
-
+		//Texture
+		data.push_back(tx);
+		data.push_back(ty);
 	}
 
 	void addToIndexes(GLfloat p1, GLfloat p2, GLfloat p3) {
