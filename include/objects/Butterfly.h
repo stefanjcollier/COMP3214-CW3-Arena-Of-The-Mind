@@ -45,13 +45,12 @@ public:
 	}
 
 	void draw(Shader textureshader) {
-		// Bind Textures using texture units
+		glBindVertexArray(this->VAO);
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, this->texture);
 		glUniform1i(glGetUniformLocation(textureshader.Program, "ourTexture"), 0);
 
-		//Draw
-		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, indexes.size(), GL_UNSIGNED_INT, 0);
 	}
 
@@ -85,21 +84,21 @@ private:
 
 	void populateDataAndIndices() {
 		//Right Wing
-		GLfloat x_off = 0.1;
-		this->addToData(x_off + 0.0f, 0.0f, 0.0f,		0.0f, 0.0f);
-		this->addToData(x_off + 0.0f, height, 0.0f,		0.0f, 1.0f);
-		this->addToData(x_off + width, height, 0.0f,	1.0f, 1.0f);
-		this->addToData(x_off + width, 0, 0.0f,			1.0f, 0.0f);
+		GLfloat x_off = 0.0;
+		this->addToData(x_off + 0.0f, 0.0f, 0.0f,		1.0f, 0.0f);
+		this->addToData(x_off + 0.0f, height, 0.0f,		1.0f, 1.0f);
+		this->addToData(x_off + width, height, 0.0f,	0.0f, 1.0f);
+		this->addToData(x_off + width, 0, 0.0f,			0.0f, 0.0f);
 
 		this->addToIndexes(0, 1, 2);
 		this->addToIndexes(0, 3, 2);
 
 		//Left Wing
 		x_off = -0.1;
-		this->addToData(x_off + 0.0f, 0.0f, 0.0f,		0.0f, 0.0f);
-		this->addToData(x_off + 0.0f, height, 0.0f,		0.0f, 1.0f);
-		this->addToData(x_off - width, height, 0.0f,	1.0f, 1.0f);
-		this->addToData(x_off - width, 0, 0.0f,			1.0f, 0.0f);
+		this->addToData(x_off + 0.0f, 0.0f, 0.0f,		1.0f, 0.0f);
+		this->addToData(x_off + 0.0f, height, 0.0f,		1.0f, 1.0f);
+		this->addToData(x_off - width, height, 0.0f,	0.0f, 1.0f);
+		this->addToData(x_off - width, 0, 0.0f,			0.0f, 0.0f);
 
 		this->addToIndexes(4, 5, 6);
 		this->addToIndexes(4, 7, 6);
@@ -107,25 +106,30 @@ private:
 
 	void prepareTexture() {
 		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, this->texture); 
-		// All upcoming GL_TEXTURE_2D operations now have effect on our texture object
+		glBindTexture(GL_TEXTURE_2D, this->texture); // All upcoming GL_TEXTURE_2D operations now have effect on our texture object
 
-		// Set our texture parameters
+													 // Set our texture parameters
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 		// Set texture filtering
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		// Load, create texture and generate mipmaps
-		int w, h, c;
-		unsigned char* image = stbi_load("container.jpg", &w, &h, &c, STBI_rgb);
-//		unsigned char* image = stbi_load("orange_wing.png", &w, &h, &c, STBI_rgb_alpha);
-
+		int width, height, comp;
+		unsigned char* image = stbi_load("orange_wing.png", &width, &height, &comp, STBI_rgb_alpha);
 		if (image == nullptr)
 			throw(std::string("Failed to load texture"));
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+		if (comp == 3) {
+			printf("TEXTURE::1::RGB\n");
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+		}
+		else if (comp == 4) {
+			printf("TEXTURE::1::RGBA\n");
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+		}
 		glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(image);
 		glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.

@@ -191,7 +191,7 @@ int main()
 	Cube cube(3);
 	cube.instantiate();
 
-	Butterfly butter(5,3,glm::vec3(0.25f,0.5f,0.0f));
+	Butterfly butter(15,9,glm::vec3(0.25f,0.5f,0.0f));
 	butter.instantiate();
 
 	/**************************************************************
@@ -555,14 +555,15 @@ int main()
 			model = glm::translate(model, glm::vec3(-20.0f, 20.0f, 0.0f));
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			glUniform3f(objectColorLoc, 0.75f, 0.75f, 0.0f);
-			/*
+
+
 			textureShader.Use();
-			cube.draw(textureShader);
-			//butter.draw(textureShader);
-			fancyLightShader.Use();
-			*/
+			glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(model));
+			//cube.draw(textureShader);
+			butter.draw(textureShader);
 
 			//---------------------------------------------------------
+			/*
 			textureShader.Use();
 
 			glBindVertexArray(VAO2);
@@ -574,6 +575,7 @@ int main()
 
 			glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			glDrawArrays(GL_TRIANGLES, 0, 36);
+			*/
 			//---------------------------------------------------------
 
 			glm::mat4 model2 = glm::translate(model, glm::vec3(-20.0f, -20.0f, 0.0f));

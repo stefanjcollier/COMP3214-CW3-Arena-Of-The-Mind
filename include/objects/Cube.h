@@ -34,17 +34,16 @@ public:
 		//fill the buffers
 		makeBuffers();
 
-		//prepareTexture();
+		prepareTexture();
 	}
 
 	void draw(Shader textureshader) {
-		//get texture
+		glBindVertexArray(this->VAO);
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, this->texture);
 		glUniform1i(glGetUniformLocation(textureshader.Program, "ourTexture"), 0);
-		
-		//Draw
-		glBindVertexArray(VAO);
+
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
 
@@ -62,8 +61,10 @@ private:
 	GLuint texture;
 	vector<GLfloat> data;
 
+	
+
+
 	void populateData() {
-		printf("CUBE::DATA::START\n");
 		GLfloat vertices[] = {
 			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 			0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -108,6 +109,7 @@ private:
 			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 		};
 
+		printf("CUBE::DATA::START\n");
 		for (GLuint item = 0; item < 180; item++) {
 			if (vertices[item] == 0.5f) {
 				this->data.push_back(width);
@@ -122,6 +124,7 @@ private:
 	}
 
 	void makeBuffers() {
+
 		printf("CUBE::BUFFERS::START\n");
 		printf("CUBE::BUFFERS::DataSize::%d\n", this->data.size());
 
@@ -129,15 +132,14 @@ private:
 		glGenBuffers(1, &VBO);
 
 		glBindVertexArray(VAO);
-
+		
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*this->data.size(), &data[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(GLfloat), &data[0], GL_STATIC_DRAW);
 
-		/// Position attribute
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, bufferWidth * sizeof(GLfloat), (GLvoid*)0);
+		// Position attribute
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
 		glEnableVertexAttribArray(0);
-
-		/// Texture Coord attribute
+		// TexCoord attribute
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 		glEnableVertexAttribArray(2);
 
@@ -145,31 +147,36 @@ private:
 		printf("CUBE::BUFFERS::DONE\n");
 	}
 
-	/*void prepareTexture() {
+	void prepareTexture() {
 		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, this->texture);
-		// All upcoming GL_TEXTURE_2D operations now have effect on our texture object
+		glBindTexture(GL_TEXTURE_2D, this->texture); // All upcoming GL_TEXTURE_2D operations now have effect on our texture object
 
-		// Set our texture parameters
+												// Set our texture parameters
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 		// Set texture filtering
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		// Load, create texture and generate mipmaps
-		int w, h, c;
-		unsigned char* image = stbi_load("container.jpg", &w, &h, &c, STBI_rgb);
-		//		unsigned char* image = stbi_load("orange_wing.png", &w, &h, &c, STBI_rgb_alpha);
-
+		int width, height, comp;
+		unsigned char* image = stbi_load("orange_wing.png", &width, &height, &comp, STBI_rgb_alpha);
 		if (image == nullptr)
 			throw(std::string("Failed to load texture"));
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+		if (comp == 3) {
+			printf("TEXTURE::1::RGB\n");
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+		}
+		else if (comp == 4) {
+			printf("TEXTURE::1::RGBA\n");
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+		}
 		glGenerateMipmap(GL_TEXTURE_2D);
 		stbi_image_free(image);
 		glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
-	}*/
+	}
 
 
 };
