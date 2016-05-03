@@ -26,12 +26,16 @@ using namespace std;
 
 class Wing {
 public:
-	Wing(GLfloat wingHeight, GLfloat wingWidth, string texture) {
+	Wing(GLfloat wingHeight, GLfloat wingWidth) {
 		this->width = wingWidth;
 		this->height = wingHeight;
-		this->image = texture;
 	}
-
+	GLfloat getHeight() {
+		return this->height;
+	}
+	GLfloat getWidth() {
+		return this->width;
+	}
 	/*
 	* Create the data
 	*/
@@ -65,7 +69,6 @@ private:
 	GLuint VBO, VAO, EBO;
 
 	GLfloat height, width;
-	string image;
 
 	vector<GLfloat>  data;
 	vector<GLuint>  indexes;
@@ -106,7 +109,7 @@ private:
 
 		// Load, create texture and generate mipmaps
 		int width, height, comp;
-		unsigned char* image = stbi_load("orange_wing.png", &width, &height, &comp, STBI_rgb_alpha);
+		unsigned char* image = stbi_load("resources/textures/orange_wing.png", &width, &height, &comp, STBI_rgb_alpha);
 		if (image == nullptr)
 			throw(std::string("Failed to load texture"));
 
