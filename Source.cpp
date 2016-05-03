@@ -29,6 +29,7 @@
 #include "SmallOrangeButterFly.h"
 #include "SmallBlueButterFly.h"
 
+#include "Island.h"
 
 //Bullet Includes
 #include "btBulletDynamicsCommon.h"
@@ -189,24 +190,24 @@ int main()
 	Shader textureShader("resources/shaders/textureShader.vs", "resources/shaders/textureShader.frag");
 
 	Sphere genericSphere(nodes);
-
-	Windmill windmill(12, 16, 14, 50, 10, glm::vec3(0.75f,0.75f,0.0f), glm::vec3(0.75f, 0.1f, 0.0f) );
+	GLfloat scale = 7;
+	Windmill windmill(12.0f/scale, 16.0f/scale, 14.0f/scale, 50.0f/ scale, 10.0f/ scale, glm::vec3(0.75f,0.75f,0.0f), glm::vec3(0.75f, 0.1f, 0.0f) );
 	windmill.instantiate();
 
 	Cube cube(3);
 	cube.instantiate();
 
 	LargeOrangeButterfly lobutter;
-	lobutter.instantiate();
-
 	LargeBlueButterfly lbbutter;
-	lbbutter.instantiate();
-
 	SmallOrangeButterfly sobutter;
-	sobutter.instantiate();
-
 	SmallBlueButterfly sbbutter;
+	lobutter.instantiate();
+	lbbutter.instantiate();
+	sobutter.instantiate();
 	sbbutter.instantiate();
+
+	Island island;
+	island.instantiate();
 
 	/**************************************************************
 	********************[  Bullet Def's   ]***********************
@@ -356,72 +357,6 @@ int main()
 	glBindVertexArray(0); // Unbind VAO
 
 
-						  /**************************************************************
-						  ********************[  Cube ]**************************
-						  ***************************************************************/
-						  // Set up vertex data (and buffer(s)) and attribute pointers
-	GLfloat vertices2[] = {
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-	};
-	// World space positions of our cubes
-	GLuint VBO2, VAO2;
-	glGenVertexArrays(1, &VAO2);
-	glGenBuffers(1, &VBO2);
-
-	glBindVertexArray(VAO2);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
-
-	// Position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-	// TexCoord attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(2);
-
-	glBindVertexArray(0); // Unbind VAO
-
 	/**************************************************************
 	******************[  Others  Stuff ]****************************
 	***************************************************************/
@@ -475,7 +410,7 @@ int main()
 		glm::mat4 view;
 		view = glm::translate(camera.GetViewMatrix(), glm::vec3(-10.0f, 25.0f, -3.0f));
 		glm::mat4 projection = glm::perspective(camera.Zoom, (GLfloat)WIDTH / (GLfloat)HEIGHT, 0.1f, 100.0f);
-		// Get the uniform locations
+		// Get the uniform locations	
 		GLint modelLoc = glGetUniformLocation(fancyLightShader.Program, "model");
 		GLint viewLoc = glGetUniformLocation(fancyLightShader.Program, "view");
 		GLint projLoc = glGetUniformLocation(fancyLightShader.Program, "projection");
@@ -523,19 +458,24 @@ int main()
 		}
 		glBindVertexArray(0);
 
-		fancyLightShader.Use();
+			fancyLightShader.Use();
 
+			island.draw(fancyLightShader);
+
+			
 			glm::mat4 model;
-			glm::vec3 pos = glm::vec3(-10.0f, 0.0f, -3.0f);
+			glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
 			model = glm::translate(model, pos);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
 			windmill.draw(fancyLightShader);
+			lobutter.draw(textureShader, glm::vec3(0.0f, 3.0f, 1.8f), 0.7, 0);
 
-			lobutter.draw(textureShader, glm::vec3(15.0f, 20.0f, 5.0f), 2, 0);
-			lbbutter.draw(textureShader, glm::vec3(15.0f, 30.0f, 12.0f), 3, 45);
-			sbbutter.draw(textureShader, glm::vec3(13.0f, 20.0f, 16.0f), 5, 30);
-			sobutter.draw(textureShader, glm::vec3(14.0f, 24.0f, 16.0f), 5, 60);
+
+
+			//Transparent objects are drawn last
+			lbbutter.draw(textureShader, glm::vec3(5.0f, 5.0f, 12.0f), 3, 45);
+			sbbutter.draw(textureShader, glm::vec3(2.0f, 1.6f, 2.4), 5, 30);
+			sobutter.draw(textureShader, glm::vec3(2.0f, 2.0f, 2.6), 5, 60);
 
 
 
@@ -549,14 +489,14 @@ int main()
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
 
-	//Texture VBOs
-	glDeleteVertexArrays(1, &VAO2);
-	glDeleteBuffers(1, &VBO2);
-
 	windmill.kill();
 	cube.kill();
 	lobutter.kill();
 	lbbutter.kill();
+	sobutter.kill();
+	sbbutter.kill();
+	island.kill();
+
 	//Clean up the bullet stuff
 	bullet_close();
 	// Terminate GLFW, clearing any resources allocated by GLFW.

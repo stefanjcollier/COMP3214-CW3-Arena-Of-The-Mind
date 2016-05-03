@@ -20,8 +20,9 @@ using namespace std;
 
 class Ground {
 public:
-	Ground(GLfloat r, glm::vec3 color) {
-		this->radius = r;
+	Ground(GLfloat w, GLuint n, glm::vec3 color) {
+		this->width = w;
+		this->nodes = n;
 		this->baseColor = color;
 	}
 
@@ -39,6 +40,7 @@ public:
 	}
 
 	void draw(Shader shader) {
+
 		this->setColor(shader, this->baseColor);
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, rimIndexes.size(), GL_UNSIGNED_INT, 0);
@@ -60,7 +62,8 @@ private:
 	vector<GLfloat> rimData;
 	vector<GLuint>  rimIndexes;
 	
-	GLfloat radius;
+	GLfloat width;
+	GLuint nodes;
 	glm::vec3 baseColor;
 	
 	void setColor(Shader shader, glm::vec3 color) {
@@ -70,38 +73,33 @@ private:
 
 
 	void populateData() {
-		GLfloat thetaInc = TWO_PI / NODES_IN_CIRCLE;
-		GLfloat theta;
+		GLfloat start = -this->width/2;
+		GLfloat inc = this->width / this->nodes;
 
-		//----------------[ Bottom Circle ]---------------------------------
-		for (GLuint node = 0; node < NODES_IN_CIRCLE; node++) {
-			theta = thetaInc * node;
-			this->addToData(
-				this->radius * glm::cos(theta),
-				0,
-				this->radius * glm::sin(theta));
+		for (GLuint xnode = 0; xnode < this->nodes; xnode++) {
+			for (GLuint znode = 0; znode < this->nodes; znode++) {
+				this->addToData(
+					start + xnode*inc,
+					this->getRand(0,0.5),
+					start + znode+inc);
+			}
+
 		}
-		this->addToData(0, 0, 0); //Mid Face point
-
 	}
 
 	void populateIndexes() {
-		GLuint bot_1, bot_2;
-		GLuint bot_mid = NODES_IN_CIRCLE;
+		GLuint bot_left , bot_right, top_left, top_right;
+		for (GLuint xnode = 0; xnode < this->nodes-1; xnode++) {
+			for (GLuint znode = 0; znode < this->nodes-1; znode++) {
+				bot_left = xnode + this->nodes * znode;
+				bot_right = bot_left + 1;
+				top_left = bot_left + this->nodes;
+				top_right = top_left + 1;
 
-		for (bot_1 = 0; bot_1 < NODES_IN_CIRCLE; bot_1++) {
-			bot_2 = bot_1 + 1;
-			addToIndexes(
-				bot_1,
-				bot_2,
-				bot_mid);
+				this->addToIndexes(bot_left, bot_right, top_right);
+				this->addToIndexes(bot_left, top_left, top_right);
+			}
 		}
-		//The overlap of the circle
-		addToIndexes(
-			NODES_IN_CIRCLE - 1,
-			0,
-			bot_mid);
-
 	}
 
 	void makeBuffers() {
@@ -147,7 +145,10 @@ private:
 		rimIndexes.push_back(p2);
 		rimIndexes.push_back(p3);
 	}
-
+	
+	GLfloat getRand(GLfloat LO, GLfloat HI) {
+		return LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
+	}
 
 };
 

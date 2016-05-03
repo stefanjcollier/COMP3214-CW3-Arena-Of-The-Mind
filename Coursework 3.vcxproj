@@ -125,6 +125,7 @@
     <ClInclude Include="include\objects\Ground.h" />
     <ClInclude Include="include\objects\Island.h" />
     <ClInclude Include="include\objects\LargeBlueButterFly.h" />
+    <ClInclude Include="include\objects\LargeOrangeButterFly.h" />
     <ClInclude Include="include\objects\SmallBlueButterfly.h" />
     <ClInclude Include="include\objects\SmallOrangeButterfly.h" />
     <ClInclude Include="include\objects\Windmill.h" />
@@ -132,7 +133,6 @@
     <ClInclude Include="include\Sphere.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\World.h" />
-    <ClInclude Include="LargeOrangeButterFly.h" />
     <ClInclude Include="OrangeWing.h" />
   </ItemGroup>
   <ItemGroup>

@@ -21,7 +21,7 @@ enum Camera_Movement {
 // Default camera values
 const GLfloat YAW = -90.0f;
 const GLfloat PITCH = 0.0f;
-const GLfloat SPEED = 100.0f;
+const GLfloat SPEED = 10.0f;
 const GLfloat SENSITIVTY = 0.1f;
 const GLfloat ZOOM = 45.0f;
 
@@ -81,6 +81,11 @@ public:
 			this->Position -= this->Right * velocity;
 		if (direction == RIGHT)
 			this->Position += this->Right * velocity;
+
+		GLfloat floor = 26.0f;
+		if (this->Position.y < floor) {
+			this->Position.y = floor;
+		}
 	}
 
 	// Processes input received from a mouse input system. Expects the offset value in both the x and y direction.

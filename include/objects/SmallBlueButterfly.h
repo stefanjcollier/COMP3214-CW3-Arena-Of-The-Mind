@@ -9,7 +9,7 @@ using namespace std;
 #include "BlueWing.h"
 
 
-BlueWing smallBWing(5.0f, 3.0f);
+BlueWing smallBWing(0.25f, 3.0f / 20.0f);
 
 class SmallBlueButterfly {
 public:
