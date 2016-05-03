@@ -69,7 +69,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Stefa\System Documents\Other Stuff\general_include;C:\Users\Stefa\Documents\Visual Studio 2015\Projects\Coursework 3\Coursework 3\shaders;C:\Users\Stefa\Documents\Visual Studio 2015\Projects\Coursework 3\Coursework 3\include;C:\Users\Stefa\Documents\Visual Studio 2015\Projects\Coursework 3\Coursework 3\include\objects;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Stefa\System Documents\Other Stuff\general_include;C:\Users\Stefa\Documents\Visual Studio 2015\Projects\Coursework 3\Coursework 3\resources\shaders;C:\Users\Stefa\Documents\Visual Studio 2015\Projects\Coursework 3\Coursework 3\include;C:\Users\Stefa\Documents\Visual Studio 2015\Projects\Coursework 3\Coursework 3\include\objects;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\Stefa\System Documents\Other Stuff\general_lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -119,12 +119,6 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\lightShader.frag" />
-    <None Include="shaders\shader.vs" />
-    <None Include="shaders\textureShader.frag" />
-    <None Include="shaders\textureShader.vs" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\objects\Butterfly.h" />
     <ClInclude Include="include\objects\Cube.h" />
@@ -132,6 +126,12 @@
     <ClInclude Include="include\Shader.h" />
     <ClInclude Include="include\Sphere.h" />
     <ClInclude Include="include\World.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\lightShader.frag" />
+    <None Include="resources\shaders\shader.vs" />
+    <None Include="resources\shaders\textureShader.frag" />
+    <None Include="resources\shaders\textureShader.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

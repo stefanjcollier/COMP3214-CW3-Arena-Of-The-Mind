@@ -16,25 +16,14 @@
     <Filter Include="Header Files\objects">
       <UniqueIdentifier>{f97e133a-7361-43e6-b6ca-312c4f40d53f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\shaders">
+      <UniqueIdentifier>{b0e9aaec-77ff-43c7-b14a-787d40b509d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="shaders\lightShader.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="shaders\shader.vs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="shaders\textureShader.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="shaders\textureShader.vs">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\objects\Butterfly.h">
@@ -58,5 +47,19 @@
     <ClInclude Include="include\World.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\lightShader.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\shader.vs">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\textureShader.frag">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="resources\shaders\textureShader.vs">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
