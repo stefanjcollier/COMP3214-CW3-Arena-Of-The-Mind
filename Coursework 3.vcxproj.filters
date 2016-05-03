@@ -50,10 +50,10 @@
     <ClInclude Include="include\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Wing.h">
+    <ClInclude Include="LargeOrangeButterFly.h">
       <Filter>Header Files\objects</Filter>
     </ClInclude>
-    <ClInclude Include="LargeOrangeButterFly.h">
+    <ClInclude Include="OrangeWing.h">
       <Filter>Header Files\objects</Filter>
     </ClInclude>
   </ItemGroup>

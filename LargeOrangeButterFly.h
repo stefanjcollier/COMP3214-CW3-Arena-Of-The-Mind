@@ -6,10 +6,10 @@ using namespace std;
 
 //My includes
 #include "Shader.h"
-#include "Wing.h"
+#include "OrangeWing.h"
 
 
-Wing largeWing(15.0f, 9.0f);
+OrangeWing largeWing(15.0f, 9.0f);
 
 class LargeOrangeButterfly {
 public:

@@ -127,7 +127,7 @@
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\World.h" />
     <ClInclude Include="LargeOrangeButterFly.h" />
-    <ClInclude Include="Wing.h" />
+    <ClInclude Include="OrangeWing.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\lightShader.frag" />
