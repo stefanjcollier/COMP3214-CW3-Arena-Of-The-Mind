@@ -413,39 +413,6 @@ int main()
 
 	glBindVertexArray(0); // Unbind VAO
 
-
-	GLuint texture1;
-	glGenTextures(1, &texture1);
-	glBindTexture(GL_TEXTURE_2D, texture1); // All upcoming GL_TEXTURE_2D operations now have effect on our texture object
-
-											// Set our texture parameters
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	// Set texture filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	// Load, create texture and generate mipmaps
-	int width, height, comp;
-	unsigned char* image = stbi_load("orange_wing.png", &width, &height, &comp, STBI_rgb_alpha);
-	if (image == nullptr)
-		throw(std::string("Failed to load texture"));
-
-	if (comp == 3) {
-		printf("TEXTURE::1::RGB\n");
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-	}
-	else if (comp == 4) {
-		printf("TEXTURE::1::RGBA\n");
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-	}
-	glGenerateMipmap(GL_TEXTURE_2D);
-	stbi_image_free(image);
-	glBindTexture(GL_TEXTURE_2D, 0); // Unbind texture when done, so we won't accidentily mess up our texture.
-
-
-
 	/**************************************************************
 	******************[  Others  Stuff ]****************************
 	***************************************************************/
