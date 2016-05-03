@@ -21,10 +21,6 @@ using namespace std;
 
 
 
-const GLuint NODES_IN_CIRCLE = 20;
-const GLfloat PI = 3.1415;
-const GLfloat TWO_PI = 6.2832;
-
 class Windmill {
 public:
 	Windmill(GLfloat tr, GLfloat br, GLfloat rr, GLfloat h, GLfloat rh, glm::vec3 bC, glm::vec3 rC) {
@@ -75,6 +71,10 @@ public:
 	
 
 private:
+	const GLuint NODES_IN_CIRCLE = 20;
+	const GLfloat PI = 3.1415;
+	const GLfloat TWO_PI = 6.2832;
+
 	GLuint VBO, VAO, EBO;
 	GLuint RoofVBO, RoofVAO, RoofEBO;
 

@@ -1,5 +1,5 @@
-#ifndef WINDMILL_H
-#define WINDMILL_H
+#ifndef BUTTERFLY_H
+#define BUTTERFLY_H
 
 // GLM Mathematics
 #include <glm/glm.hpp>
@@ -21,8 +21,6 @@ using namespace std;
 
 
 
-const GLfloat PI = 3.1415;
-const GLfloat TWO_PI = 6.2832;
 
 class Butterfly {
 public:
@@ -56,6 +54,9 @@ public:
 
 
 private:
+	const GLfloat PI = 3.1415;
+	const GLfloat TWO_PI = 6.2832;
+
 	GLuint VBO, VAO, EBO;
 
 	GLfloat height, width;
@@ -75,20 +76,20 @@ private:
 	void populateDataAndIndices() {
 		//Right Wing
 		GLfloat x_off = 0.1;
-		this->addToData(x_off + 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-		this->addToData(x_off + 0.0f, height, 0.0f, 0.0f, 0.0f);
-		this->addToData(x_off + width, height, 0.0f, 0.0f, 0.0f);
-		this->addToData(x_off + width, 0, 0.0f, 0.0f, 0.0f);
+		this->addToData(x_off + 0.0f, 0.0f, 0.0f,		0.0f, 0.0f);
+		this->addToData(x_off + 0.0f, height, 0.0f,		0.0f, 1.0f);
+		this->addToData(x_off + width, height, 0.0f,	1.0f, 1.0f);
+		this->addToData(x_off + width, 0, 0.0f,			1.0f, 0.0f);
 
 		this->addToIndexes(0, 1, 2);
 		this->addToIndexes(0, 3, 2);
 
 		//Left Wing
 		x_off = -0.1;
-		this->addToData(x_off + 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-		this->addToData(x_off + 0.0f, height, 0.0f, 0.0f, 0.0f);
-		this->addToData(x_off - width, height, 0.0f, 0.0f, 0.0f);
-		this->addToData(x_off - width, 0, 0.0f, 0.0f, 0.0f);
+		this->addToData(x_off + 0.0f, 0.0f, 0.0f,		0.0f, 0.0f);
+		this->addToData(x_off + 0.0f, height, 0.0f,		0.0f, 1.0f);
+		this->addToData(x_off - width, height, 0.0f,	1.0f, 1.0f);
+		this->addToData(x_off - width, 0, 0.0f,			1.0f, 0.0f);
 
 		this->addToIndexes(4, 5, 6);
 		this->addToIndexes(4, 7, 6);

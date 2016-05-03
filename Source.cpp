@@ -24,8 +24,10 @@
 #include "Camera.h"
 #include "Sphere.h"
 #include "World.h"
+
 #include "Windmill.h"
 #include "Cube.h"
+#include "Butterfly.h"
 
 //Bullet Includes
 #include "btBulletDynamicsCommon.h"
@@ -189,6 +191,9 @@ int main()
 
 	Cube cube(3);
 	cube.instantiate();
+
+	Butterfly butter(5,3,glm::vec3(0.25f,0.5f,0.0f));
+	butter.instantiate();
 
 	/**************************************************************
 	********************[  Bullet Def's   ]***********************
@@ -433,10 +438,13 @@ int main()
 			model = glm::translate(model, pos);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-			//cube.draw();
 			windmill.draw(fancyLightShader);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
 
+			model = glm::translate(model, glm::vec3(-20.0f, 0.0f, 0.0f));
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+			glUniform3f(objectColorLoc, 0.75f, 0.75f, 0.0f);
+			//cube.draw();
+			butter.draw(fancyLightShader);
 
 			model = glm::translate(model, glm::vec3(-20.0f, 0.0f, 0.0f));
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -461,6 +469,7 @@ int main()
 
 	windmill.kill();
 	cube.kill();
+	butter.kill();
 
 	//Clean up the bullet stuff
 	bullet_close();
