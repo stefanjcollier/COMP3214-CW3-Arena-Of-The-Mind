@@ -1,23 +1,23 @@
-#ifndef LARGEORANGEBUTTERFLY_H
-#define LARGEORANGEBUTTERFLY_H
+#ifndef LARGEBLUEBUTTERFLY_H
+#define LARGEBLUEBUTTERFLY_H
 
 using namespace std;
 #include <stdio.h>
 
 //My includes
 #include "Shader.h"
-#include "OrangeWing.h"
+#include "BlueWing.h"
 
 
-OrangeWing largeWing(15.0f, 9.0f);
+BlueWing largeBWing(15.0f, 9.0f);
 
-class LargeOrangeButterfly {
+class LargeBlueButterfly {
 public:
 	/*
 	* Create the data
 	*/
 	void instantiate() {
-		largeWing.instantiate();
+		largeBWing.instantiate();
 	}
 
 	void draw(Shader textureShader, glm::vec3 centre, GLfloat speed, GLfloat offsetDegrees) {
@@ -43,16 +43,16 @@ public:
 
 		//Draw wings
 		glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(wingModel1));
-		largeWing.draw(textureShader);
+		largeBWing.draw(textureShader);
 
 		glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(wingModel2));
-		largeWing.draw(textureShader);
+		largeBWing.draw(textureShader);
 
 
 	}
 
 	void kill() {
-		largeWing.kill();
+		largeBWing.kill();
 	}
 
 };

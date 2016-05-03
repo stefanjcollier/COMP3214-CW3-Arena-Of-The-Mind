@@ -24,8 +24,11 @@
 #include "Windmill.h"
 #include "Cube.h"
 
-#include "Wing.h"
 #include "LargeOrangeButterFly.h"
+#include "LargeBlueButterFly.h"
+#include "SmallOrangeButterFly.h"
+#include "SmallBlueButterFly.h"
+
 
 //Bullet Includes
 #include "btBulletDynamicsCommon.h"
@@ -193,11 +196,17 @@ int main()
 	Cube cube(3);
 	cube.instantiate();
 
-	Wing wing(15, 9);
-	wing.instantiate();
-
 	LargeOrangeButterfly lobutter;
 	lobutter.instantiate();
+
+	LargeBlueButterfly lbbutter;
+	lbbutter.instantiate();
+
+	SmallOrangeButterfly sobutter;
+	sobutter.instantiate();
+
+	SmallBlueButterfly sbbutter;
+	sbbutter.instantiate();
 
 	/**************************************************************
 	********************[  Bullet Def's   ]***********************
@@ -492,7 +501,6 @@ int main()
 		/**************************************************************
 		********************[  Drawing Time! ]*******************
 		***************************************************************/
-
 		fancyLightShader.Use();
 
 		glBindVertexArray(VAO);
@@ -525,7 +533,10 @@ int main()
 			windmill.draw(fancyLightShader);
 
 			lobutter.draw(textureShader, glm::vec3(15.0f, 20.0f, 5.0f), 2, 0);
-			lobutter.draw(textureShader, glm::vec3(15.0f, 30.0f, 12.0f), 3, 45);
+			lbbutter.draw(textureShader, glm::vec3(15.0f, 30.0f, 12.0f), 3, 45);
+			sbbutter.draw(textureShader, glm::vec3(13.0f, 20.0f, 16.0f), 5, 30);
+			sobutter.draw(textureShader, glm::vec3(14.0f, 24.0f, 16.0f), 5, 60);
+
 
 
 
@@ -545,7 +556,7 @@ int main()
 	windmill.kill();
 	cube.kill();
 	lobutter.kill();
-
+	lbbutter.kill();
 	//Clean up the bullet stuff
 	bullet_close();
 	// Terminate GLFW, clearing any resources allocated by GLFW.

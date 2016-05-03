@@ -1,5 +1,5 @@
-#ifndef LARGEORANGEBUTTERFLY_H
-#define LARGEORANGEBUTTERFLY_H
+#ifndef SMALLORANGEBUTTERFLY_H
+#define SMALLORANGEBUTTERFLY_H
 
 using namespace std;
 #include <stdio.h>
@@ -9,15 +9,15 @@ using namespace std;
 #include "OrangeWing.h"
 
 
-OrangeWing largeWing(15.0f, 9.0f);
+OrangeWing smallOWing(5.0f, 3.0f);
 
-class LargeOrangeButterfly {
+class SmallOrangeButterfly {
 public:
 	/*
 	* Create the data
 	*/
 	void instantiate() {
-		largeWing.instantiate();
+		smallOWing.instantiate();
 	}
 
 	void draw(Shader textureShader, glm::vec3 centre, GLfloat speed, GLfloat offsetDegrees) {
@@ -43,16 +43,16 @@ public:
 
 		//Draw wings
 		glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(wingModel1));
-		largeWing.draw(textureShader);
+		smallOWing.draw(textureShader);
 
 		glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(wingModel2));
-		largeWing.draw(textureShader);
+		smallOWing.draw(textureShader);
 
 
 	}
 
 	void kill() {
-		largeWing.kill();
+		smallOWing.kill();
 	}
 
 };
