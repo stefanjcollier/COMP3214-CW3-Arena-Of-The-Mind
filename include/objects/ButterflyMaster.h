@@ -1,6 +1,0 @@
-#ifndef BUTTERFLYMASTER_H
-#define BUTTERFLYMASTER_H
-
-
-
-#endif

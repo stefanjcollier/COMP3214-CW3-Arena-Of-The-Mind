@@ -23,8 +23,9 @@
 
 #include "Windmill.h"
 #include "Cube.h"
-#include "Butterfly.h"
+
 #include "Wing.h"
+#include "LargeOrangeButterFly.h"
 
 //Bullet Includes
 #include "btBulletDynamicsCommon.h"
@@ -192,11 +193,12 @@ int main()
 	Cube cube(3);
 	cube.instantiate();
 
-	Butterfly butter(15,9,glm::vec3(0.25f,0.5f,0.0f));
 	Wing wing(15, 9);
-
-	butter.instantiate();
 	wing.instantiate();
+
+	LargeOrangeButterfly lobutter;
+	lobutter.instantiate();
+
 	/**************************************************************
 	********************[  Bullet Def's   ]***********************
 	***************************************************************/
@@ -555,61 +557,9 @@ int main()
 
 			windmill.draw(fancyLightShader);
 
-			model = glm::translate(model, glm::vec3(-20.0f, 20.0f, 0.0f));
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-			glUniform3f(objectColorLoc, 0.75f, 0.75f, 0.0f);
+			lobutter.draw(textureShader, glm::vec3(15.0f, 20.0f, 5.0f), 2, 0);
+			lobutter.draw(textureShader, glm::vec3(15.0f, 30.0f, 12.0f), 3, 45);
 
-
-			textureShader.Use();
-			glm::mat4 wingModel1;
-			glm::mat4 wingModel2;
-			glm::vec3 wingPos = glm::vec3(15.0f, 5.0f, 5.0f);
-
-			wingModel1 = glm::translate(wingModel1, wingPos);
-			wingModel2 = glm::translate(wingModel2, wingPos);
-			wingModel2 = glm::rotate(wingModel2, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-			GLfloat angle = glm::sin(glfwGetTime()*3);
-			if (angle > 0) {
-				angle = angle*-1;
-			}
-
-			wingModel1 = glm::rotate(wingModel1, float(angle), glm::vec3(0.0f, 1.0f, 0.0f));
-			wingModel2 = glm::rotate(wingModel2, -float(angle), glm::vec3(0.0f, 1.0f, 0.0f));
-
-			//glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(wingModel));
-
-			glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(wingModel1));
-			wing.draw(textureShader);
-
-			glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(wingModel2));
-			wing.draw(textureShader);
-
-			//---------------------------------------------------------
-			/*
-			textureShader.Use();
-
-			glBindVertexArray(VAO2);
-
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, texture1);
-			glUniform1i(glGetUniformLocation(textureShader.Program, "ourTexture"), 0);
-
-
-			glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(model));
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-			*/
-			//---------------------------------------------------------
-
-			glm::mat4 model2 = glm::translate(model, glm::vec3(-20.0f, -20.0f, 0.0f));
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model2));
-			glUniform3f(objectColorLoc, 0.75f, 0.75f, 0.0f);
-
-			glBindVertexArray(VAO);
-			glDrawElements(GL_TRIANGLES, indicesIndex, GL_UNSIGNED_INT, 0);
-			glBindVertexArray(0);
-
-		
 
 
 		// Swap the screen buffers
@@ -627,8 +577,7 @@ int main()
 
 	windmill.kill();
 	cube.kill();
-	butter.kill();
-	wing.kill();
+	lobutter.kill();
 
 	//Clean up the bullet stuff
 	bullet_close();

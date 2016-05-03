@@ -29,9 +29,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\objects\Butterfly.h">
-      <Filter>Header Files\objects</Filter>
-    </ClInclude>
     <ClInclude Include="include\objects\Cube.h">
       <Filter>Header Files\objects</Filter>
     </ClInclude>
@@ -54,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Wing.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="LargeOrangeButterFly.h">
       <Filter>Header Files\objects</Filter>
     </ClInclude>
   </ItemGroup>

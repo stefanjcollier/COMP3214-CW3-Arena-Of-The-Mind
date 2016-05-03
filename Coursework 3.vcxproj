@@ -120,13 +120,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Camera.h" />
-    <ClInclude Include="include\objects\Butterfly.h" />
     <ClInclude Include="include\objects\Cube.h" />
     <ClInclude Include="include\objects\Windmill.h" />
     <ClInclude Include="include\Shader.h" />
     <ClInclude Include="include\Sphere.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\World.h" />
+    <ClInclude Include="LargeOrangeButterFly.h" />
     <ClInclude Include="Wing.h" />
   </ItemGroup>
   <ItemGroup>
