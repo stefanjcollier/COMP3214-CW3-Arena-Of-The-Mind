@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\objects">
+      <UniqueIdentifier>{f97e133a-7361-43e6-b6ca-312c4f40d53f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -34,6 +37,15 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\objects\Butterfly.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\objects\Cube.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\objects\Windmill.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
     <ClInclude Include="include\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -44,15 +56,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\World.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Windmill.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Cube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Butterfly.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

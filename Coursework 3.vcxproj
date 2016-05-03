@@ -69,7 +69,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Stefa\System Documents\Other Stuff\general_include;C:\Users\Stefa\Documents\Visual Studio 2015\Projects\Coursework 3\Coursework 3\shaders;C:\Users\Stefa\Documents\Visual Studio 2015\Projects\Coursework 3\Coursework 3\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Stefa\System Documents\Other Stuff\general_include;C:\Users\Stefa\Documents\Visual Studio 2015\Projects\Coursework 3\Coursework 3\shaders;C:\Users\Stefa\Documents\Visual Studio 2015\Projects\Coursework 3\Coursework 3\include;C:\Users\Stefa\Documents\Visual Studio 2015\Projects\Coursework 3\Coursework 3\include\objects;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\Stefa\System Documents\Other Stuff\general_lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -125,10 +125,10 @@
     <None Include="shaders\textureShader.vs" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Butterfly.h" />
-    <ClInclude Include="Cube.h" />
-    <ClInclude Include="Windmill.h" />
     <ClInclude Include="include\Camera.h" />
+    <ClInclude Include="include\objects\Butterfly.h" />
+    <ClInclude Include="include\objects\Cube.h" />
+    <ClInclude Include="include\objects\Windmill.h" />
     <ClInclude Include="include\Shader.h" />
     <ClInclude Include="include\Sphere.h" />
     <ClInclude Include="include\World.h" />
