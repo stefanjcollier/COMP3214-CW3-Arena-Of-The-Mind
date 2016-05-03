@@ -53,7 +53,7 @@ void do_movement();
 const GLuint WIDTH = 2*800, HEIGHT = 2*600;
 
 // Camera
-Camera  camera(glm::vec3(-8.0f, 27.5f, 12.0f));
+Camera  camera(glm::vec3(-9.0f, 27.5f, 14.0f));
 GLfloat lastX = WIDTH / 2.0;
 GLfloat lastY = HEIGHT / 2.0;
 bool keys[1024];
@@ -442,6 +442,7 @@ int main()
 		***************************************************************/
 		fancyLightShader.Use();
 
+		/* //-------------[ Bullet Spheres ]-----------------
 		glBindVertexArray(VAO);
 		GLfloat allPos[99];
 		for (GLuint modelNo = 0; modelNo < MovingBits.size(); modelNo++) {
@@ -461,7 +462,7 @@ int main()
 			glDrawElements(GL_TRIANGLES, indicesIndex, GL_UNSIGNED_INT, 0);
 		}
 		glBindVertexArray(0);
-
+		*/
 
 			island.draw(fancyLightShader);
 
@@ -486,10 +487,11 @@ int main()
 			fancyLightShader.Use();
 			glm::mat4 model3;
 			pos = glm::vec3(-14.0f, 0.0f, -25.0f);
+			glm::vec3 adjustment(1.5f, 0.0f, 0.0f);
 			model3 = glm::translate(model3, pos);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model3));
 			windmill.draw(fancyLightShader);
-			lbbutter.draw(textureShader, pos + butter_offset, glm::radians(30.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.5, 85);
+			lbbutter.draw(textureShader, pos + butter_offset + adjustment, glm::radians(30.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.5, 85);
 
 
 			flock1.draw(textureShader);
