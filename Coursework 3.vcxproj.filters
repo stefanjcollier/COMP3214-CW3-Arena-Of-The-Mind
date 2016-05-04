@@ -80,6 +80,12 @@
     <ClInclude Include="include\objects\Island.h">
       <Filter>Header Files\landmass</Filter>
     </ClInclude>
+    <ClInclude Include="include\objects\Grass2D.h">
+      <Filter>Header Files\landmass</Filter>
+    </ClInclude>
+    <ClInclude Include="include\objects\GrassClump.h">
+      <Filter>Header Files\landmass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\lightShader.frag">
@@ -100,6 +106,9 @@
       <Filter>Resource Files\textures</Filter>
     </Image>
     <Image Include="resources\textures\orange_wing.png">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="resources\textures\grass.png">
       <Filter>Resource Files\textures</Filter>
     </Image>
   </ItemGroup>

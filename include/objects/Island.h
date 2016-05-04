@@ -4,7 +4,7 @@
 //My includes
 #include "Shader.h"
 #include "Ground.h"
-
+#include "GrassClump.h"
 
 Ground ground(100.0f, 80, glm::vec3(0.1f, 1.0f, 0.1f));
 

@@ -1,5 +1,5 @@
-#ifndef WING_H
-#define WING_H
+#ifndef GRASS2D
+#define GRASS2D
 
 
 
@@ -24,11 +24,11 @@ using namespace std;
 
 
 
-class Wing {
+class Grass2D {
 public:
-	Wing(GLfloat wingHeight, GLfloat wingWidth) {
-		this->width = wingWidth;
-		this->height = wingHeight;
+	Grass2D(GLfloat w, GLfloat h) {
+		this->width = w;
+		this->height = h;
 	}
 	GLfloat getHeight() {
 		return this->height;
@@ -109,7 +109,7 @@ private:
 
 		// Load, create texture and generate mipmaps
 		int width, height, comp;
-		unsigned char* image = stbi_load("resources/textures/orange_wing.png", &width, &height, &comp, STBI_rgb_alpha);
+		unsigned char* image = stbi_load("resources/textures/grass.png", &width, &height, &comp, STBI_rgb_alpha);
 		if (image == nullptr)
 			throw(std::string("Failed to load texture"));
 
