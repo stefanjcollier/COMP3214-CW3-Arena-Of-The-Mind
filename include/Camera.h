@@ -171,8 +171,9 @@ private:
 	void initTour() {
 		this->tourStartPos = 
 			glm::vec3(-9.0f, 27.5f, 28.0f);
+		//-----------------------------------
 		addPoint(-9.0f, 27.5f, 28.0f, 0.0f);
-		addPoint(-9.0f, 27.5f, 14.0f, 0.0f);
+		addPoint(-9.0f, 27.5f, 14.0f, 2.0f);
 		addPoint(0.0f, 27.5f, 14.0f, 0.0f);
 
 	}
@@ -210,7 +211,15 @@ private:
 	void tourModeUpdate(GLfloat deltaTime) {
 		if (reachedDestination(this->currentLoc)) {
 			printf("TOUR::Reached Point %d\n", this->currentLoc);
-			this->updateFocusToNextPoint();
+			//Once we have reached the point,
+			//Have we waited the allocated time yet?
+			if (this->currentWaitTime >= this->wait[this->currentLoc]) {
+				this->updateFocusToNextPoint();
+			}
+			else {
+				//If not then wait
+				this->currentWaitTime += deltaTime;
+			}
 		}
 		else { //Travel to destination
 			this->moveTowardsPoint(deltaTime);
