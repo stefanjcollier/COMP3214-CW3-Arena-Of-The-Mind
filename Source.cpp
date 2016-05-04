@@ -14,6 +14,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+//Other Externals
+#include <stdio.h>
+#include <iostream>
+
 // My includes
 #include "Shader.h"
 #include "Camera.h"
@@ -32,10 +36,6 @@
 
 #include "Island.h"
 
-//Bullet Includes
-#include "btBulletDynamicsCommon.h"
-#include <stdio.h>
-#include <iostream>
 
 
 
@@ -69,14 +69,6 @@ GLfloat lastFrame = 0.0f;  	// Time of last frame
 //Control of precision of circle curve
 const GLuint nodes = 51;
 
-///Bullet Defs
-btDefaultCollisionConfiguration* collisionConfiguration;
-btCollisionDispatcher* dispatcher;
-btSequentialImpulseConstraintSolver* solver;
-btDiscreteDynamicsWorld* dynamicsWorld;
-std::vector<btRigidBody*> MovingBits; // so that can get at all bits
-std::vector<btRigidBody*> StaticBits; // especially during clean up.
-
 
 /**************************************************************
 ********************[  Function Outlines  ]***********************
@@ -88,63 +80,6 @@ void addIndx(GLuint value) {
 	indicesIndex++;
 }
 
-btRigidBody* SetSphere(float size, int x, int y, int z) {
-	btCollisionShape* fallshape = new btSphereShape(size);
-
-	//This is a combo of both
-	btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 1, 1), btVector3(x, y, z)));
-
-	btScalar mass = 1;
-	btVector3 fallInertia(0, 0, 0);
-	fallshape->calculateLocalInertia(mass, fallInertia);
-	btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, fallshape, fallInertia);
-	btRigidBody* fallRigidBody = new btRigidBody(fallRigidBodyCI);
-	fallRigidBody->setLinearVelocity(btVector3(-5, 20, 0));
-	fallRigidBody->setRestitution(COE);
-	dynamicsWorld->addRigidBody(fallRigidBody);
-	return fallRigidBody;
-}
-
-btRigidBody* SetCube(float width, int x, int y, int z) {
-	btCollisionShape* fallshape = new btBoxShape(btVector3(width, width, width));
-
-	//This is a combo of both techniques of lecutrer and the HelloWorld bullet tutorial
-	btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0,0,1,1),btVector3(x,y,z)));
-
-	btScalar mass = 1;
-	btVector3 fallInertia(0, 0, 0);
-	fallshape->calculateLocalInertia(mass, fallInertia);
-	btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, fallshape, fallInertia);
-	btRigidBody* fallRigidBody = new btRigidBody(fallRigidBodyCI);
-	fallRigidBody->setLinearVelocity(btVector3(-5, 20, 0));
-	fallRigidBody->setRestitution(COE);
-	dynamicsWorld->addRigidBody(fallRigidBody);
-	return fallRigidBody;
-}
-
-//Returns a vec3 containing the location of the object
-glm::vec3 bullet_step(int i) {
-	btTransform trans;
-	btRigidBody* moveRigidBody;
-
-	moveRigidBody = MovingBits[i];
-	dynamicsWorld->stepSimulation(1 / 60.f, 10);
-	moveRigidBody->getMotionState()->getWorldTransform(trans);
-	return glm::vec3(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ());
-}
-
-//Should be run at the end to cleanup, requires OS assistance to do the rest
-void bullet_close() {
-	btRigidBody* moveRigidBody;
-	moveRigidBody = MovingBits[0];
-	dynamicsWorld->removeRigidBody(moveRigidBody);
-	delete moveRigidBody->getMotionState();
-	delete moveRigidBody;
-	delete dynamicsWorld;
-	delete solver;
-	delete collisionConfiguration;
-	delete dispatcher;
-}
 
 /**************************************************************
 ********************[  The Action Code!   ]********************
@@ -213,162 +148,6 @@ int main()
 	Island island;
 	island.instantiate();
 
-	/**************************************************************
-	********************[  Bullet Def's   ]***********************
-	***************************************************************/
-	///collision configuration contains default setup for memory, collision setup. Advanced users can create their own configuration.
-	collisionConfiguration = new btDefaultCollisionConfiguration();
-	///use the default collision dispatcher. For parallel processing you can use a diffent dispatcher (see Extras/BulletMultiThreaded)
-	dispatcher = new	btCollisionDispatcher(collisionConfiguration);
-	///btDbvtBroadphase is a good general purpose broadphase. You can also try out btAxis3Sweep.
-	btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
-	///the default constraint solver. For parallel processing you can use a different solver (see Extras/BulletMultiThreaded)
-	solver = new btSequentialImpulseConstraintSolver;
-	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-	dynamicsWorld->setGravity(btVector3(0, -10, 0));
-
-
-
-	/**************************************************************
-	********************[  Bullet Objects   ]***********************
-	**************[  Floor, Ceiling, 4x Walls   ]*******************
-	***************************************************************/
-	/*
-	 * Floor
-	 */
-	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
-	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
-	btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-	groundRigidBody->setRestitution(COE);
-	dynamicsWorld->addRigidBody(groundRigidBody);
-	StaticBits.push_back(groundRigidBody);
-	/*
-	* Set up left
-	*/
-	btCollisionShape* leftShape = new btStaticPlaneShape(btVector3(1, 0, 0), 1);
-	btDefaultMotionState* leftMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(-50, 0, 0)));
-	btRigidBody::btRigidBodyConstructionInfo leftRigidBodyCI(0, leftMotionState, leftShape, btVector3(0, 0, 0));
-	btRigidBody* leftRigidBody = new btRigidBody(leftRigidBodyCI);
-	leftRigidBody->setRestitution(COE);
-	dynamicsWorld->addRigidBody(leftRigidBody);
-	StaticBits.push_back(leftRigidBody);
-
-	/*
-	* Set up right
-	*/
-	btCollisionShape* rightShape = new btStaticPlaneShape(btVector3(-1, 0, 0), 1);
-	btDefaultMotionState* rightMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(50, 0, 0)));
-	btRigidBody::btRigidBodyConstructionInfo rightRigidBodyCI(0, rightMotionState, rightShape, btVector3(0, 0, 0));
-	btRigidBody* rightRigidBody = new btRigidBody(rightRigidBodyCI);
-	rightRigidBody->setRestitution(COE);
-	dynamicsWorld->addRigidBody(rightRigidBody);
-	StaticBits.push_back(rightRigidBody);
-	/*
-	* Set up back
-	*/
-	btCollisionShape* backShape = new btStaticPlaneShape(btVector3(0, 0, -1), 1);
-	btDefaultMotionState* backMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 50)));
-	btRigidBody::btRigidBodyConstructionInfo backRigidBodyCI(0, backMotionState, backShape, btVector3(0, 0, 0));
-	btRigidBody* backRigidBody = new btRigidBody(backRigidBodyCI);
-	backRigidBody->setRestitution(COE);
-	dynamicsWorld->addRigidBody(backRigidBody);
-	StaticBits.push_back(backRigidBody);
-	/*
-	* Set up front
-	*/
-	btCollisionShape* frontShape= new btStaticPlaneShape(btVector3(0, 0, 1), 1);
-	btDefaultMotionState* frontMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, -50)));
-	btRigidBody::btRigidBodyConstructionInfo frontRigidBodyCI(0, frontMotionState, frontShape, btVector3(0, 0, 0));
-	btRigidBody* frontRigidBody = new btRigidBody(frontRigidBodyCI);
-	frontRigidBody->setRestitution(COE);
-	dynamicsWorld->addRigidBody(frontRigidBody);
-	StaticBits.push_back(frontRigidBody);
-
-	/*
-	* Set up top
-	*/
-	btCollisionShape* topShape = new btStaticPlaneShape(btVector3(0, -1, 0), 1);
-	btDefaultMotionState* topMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 100, 0)));
-	btRigidBody::btRigidBodyConstructionInfo topRigidBodyCI(0, topMotionState, topShape, btVector3(0, 0, 0));
-	btRigidBody* topRigidBody = new btRigidBody(topRigidBodyCI);
-	topRigidBody->setRestitution(COE);
-	dynamicsWorld->addRigidBody(topRigidBody);
-	StaticBits.push_back(topRigidBody);
-
-	/**************************************************************
-	********************[  Bullet Objects   ]***********************
-	*******************[  2x Spheres & Cube   ]*********************
-	***************************************************************/
-	MovingBits.push_back(SetSphere(5., 10, 25, -10));
-	MovingBits.push_back(SetSphere(5., 10, 26, -10));
-	MovingBits.push_back(SetSphere(5., 10, 10, -10));
-	MovingBits.push_back(  SetCube(5., 9, 24, -10));
-
-
-	/**************************************************************
-	********************[  Graphics Objs Setup ]*******************
-	***************************************************************/
-	//It's 4 because 2+2 * (etc) for both (longitude AND latitude coords) +
-	//  Cone: (nodes: half nodes in circle => 2 demi circles = 1 circle)
-	GLfloat vertices[ 4 * (nodes * nodes * vertIndxs) + (2*(vertIndxs * nodes * 2 * 3)) ];
-	genericSphere.populateArrayWithSphere(vertices, 2.0f, 0.0f, 0.0f, 0.0f);
-
-	//TODO This is to draw the filled sphere
-	for (GLuint row = 1; row < nodes; row++) {
-		for (GLuint column = 1; column < nodes; column++) {
-			GLuint bot_left  = (column * nodes + row);
-			GLuint bot_right = (column * nodes + (row+1)%nodes);
-			GLuint top_left  = (bot_left + nodes) % (nodes*nodes);
-			GLuint top_right = (bot_right + nodes) % (nodes*nodes);
-
-			addIndx(bot_left);
-			addIndx(bot_right);
-			addIndx(top_right);
-
-			addIndx(bot_left);
-			addIndx(top_left);
-			addIndx(top_right);
-		}
-	}
-
-
-	GLuint VBO, VAO, EBO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	// Position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, vertIndxs * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	//// Normal attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, vertIndxs * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-
-	// Texture Coord attribute
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, vertIndxs * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(2);
-
-	glBindVertexArray(0); // Unbind VAO
-
-
-	/**************************************************************
-	******************[  Others  Stuff ]****************************
-	***************************************************************/
-	glm::vec3 colours[4] = {
-		glm::vec3(1.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, 1.0f),
-	};
 
 	/**************************************************************
 	********************[  GAME LOOP ]*******************
@@ -507,12 +286,6 @@ int main()
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}
-	///Clean up
-	// Properly de-allocate all resources once they've outlived their purpose
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
-
 	windmill.kill();
 	cube.kill();
 
@@ -526,8 +299,6 @@ int main()
 	island.kill();
 
 
-	//Clean up the bullet stuff
-	bullet_close();
 	// Terminate GLFW, clearing any resources allocated by GLFW.
 	glfwTerminate();
 	return 0;
