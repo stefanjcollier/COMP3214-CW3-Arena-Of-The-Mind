@@ -28,7 +28,7 @@ const GLfloat SPEED = 10.0f;
 const GLfloat SENSITIVTY = 0.1f;
 const GLfloat ZOOM = 45.0f;
 
-const GLfloat MAX_SPEED = 8.0f;
+const GLfloat MAX_SPEED = 20.0f;
 
 // An abstract camera class that processes input and calculates the corresponding Eular Angles, Vectors and Matrices for use in OpenGL
 class Camera
@@ -57,7 +57,6 @@ public:
 		this->Pitch = pitch;
 		this->updateCameraVectors();
 		this->MovementSpeed = 0.0f;
-		this->tourStartPos = glm::vec3(-9.0f, 27.5f, 28.0f);
 		this->initTour();
 	}
 	// Constructor with scalar values
@@ -128,7 +127,7 @@ public:
 		this->tourMode = true;
 		this->currentLoc = 0;
 		this->updateFocusToNextPoint();//start travelling towards pos[1]
-		this->MovementSpeed = 2.0f;
+		this->MovementSpeed = 3.0f;
 
 		//Set tour position
 		this->Position = this->tourStartPos;
@@ -169,8 +168,10 @@ private:
 	vector<GLfloat> wait;
 
 	void initTour() {
+		this->tourStartPos = glm::vec3(-9.0f, 27.5f, 28.0f);
 		addPoint(-9.0f, 27.5f, 28.0f, 0.0f);
 		addPoint(-9.0f, 27.5f, 14.0f, 0.0f);
+		addPoint(0.0f, 27.5f, 14.0f, 0.0f);
 
 	}
 	void addPoint(GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
@@ -216,7 +217,7 @@ private:
 	// A point has reached it destination when each element of the camera location in the equation
 	// camera pos - dest pos * direction >= 0
 	GLboolean reachedDestination(GLuint loc) {
-		println("TOUR::REACH::Testing reach");
+		printf("\nTOUR::REACH::Testing if reached pos[%d]\n",this->currentLoc);
 		glm::vec3 dest = this->pos[loc];
 		glm::vec3 reach = this->Position - dest;
 		reach.x *= this->direction.x;
@@ -230,7 +231,7 @@ private:
 		printf("TOUR::Reach:: x:%f,%d  y:%f,%d,   %f,%d\n", reach.x, reachX, reach.y, reachY, reach.z, reachZ);
 
 		GLboolean result = reachX && reachY && reachZ;
-		printf("TOUR::REACH::Reached Point:%d\n",result);
+		printf("TOUR::REACH::%s\n",(result)?"Reached Point!":"Not yet reached...");
 		return result;
 	}
 
@@ -239,7 +240,7 @@ private:
 		GLfloat velocity = this->MovementSpeed * deltaTime;
 		printf("\n\nTOUR::MOVE::Velocity: %f   =(%f * %f)\n", velocity, this->MovementSpeed, deltaTime);
 		printf("TOUR::MOVE:: (x,y,z):(%f,%f,%f) ->", this->Position.x, this->Position.y, this->Position.z);
-		this->Position += this->direction * deltaTime;
+		this->Position += this->direction * velocity;
 		printf("(%f,%f,%f)\n", this->Position.x, this->Position.y, this->Position.z);
 	}
 
@@ -256,24 +257,41 @@ private:
 		glm::vec3 point = this->pos[this->currentLoc];
 
 		//Set the direction for new point
-		GLfloat max = this->max(point);
-		this->direction = (point - this->Position);
+		glm::vec3 delta = point - this->Position;
+		this->direction = normalise(delta);
 		this->currentWaitTime = 0.0f;
 		printf("TOUR:: Direction Now: (%f,%f,%f)\n",direction.x, direction.y, direction.z);
-	}
-	/* Returns the abs of the maximum value */
-	GLfloat max(glm::vec3 list) {
-		GLfloat max = 999999.0f;
-		for (GLuint i = 0; i < 3; i++) {
-			if (abs(list[i]) > max) {
-				max = abs(list[i]);
-			}
-		}
-		return abs(max);
 	}
 
 	void println(char* text) {
 		printf("%s\n", text);
+	}
+
+	glm::vec3 normalise(glm::vec3 p) {
+		GLfloat max = this->max(p);
+
+		printf("TOUR::NORM:: (x,y,z) (%f,%f,%f)->", p.x, p.y, p.z);
+		p.x /= max;
+		p.y /= max;
+		p.z /= max;
+		printf("(%f,%f,%f)\n", p.x, p.y, p.z);
+
+
+		return p;
+	}
+
+	GLfloat max(glm::vec3 p) {
+		GLfloat head = abs(p.x);
+		if (abs(p.y) > head) {
+			head = abs(p.y);
+		}
+		if (abs(p.z) > head) {
+			head = abs(p.z);
+		}
+		if (head == 0.0f) {
+			return 1;
+		}
+		return head;
 	}
 
 
