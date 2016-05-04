@@ -126,11 +126,12 @@ public:
 		printf("TOUR::No of points %d\n", this->pos.size());
 		this->tourMode = true;
 		this->currentLoc = 0;
+		this->Position = this->tourStartPos;
+
 		this->updateFocusToNextPoint();//start travelling towards pos[1]
-		this->MovementSpeed = 3.0f;
+		this->MovementSpeed = 5.0f;
 
 		//Set tour position
-		this->Position = this->tourStartPos;
 		this->Yaw = YAW;
 		this->Pitch = PITCH;
 		this->updateCameraVectors();
@@ -168,7 +169,8 @@ private:
 	vector<GLfloat> wait;
 
 	void initTour() {
-		this->tourStartPos = glm::vec3(-9.0f, 27.5f, 28.0f);
+		this->tourStartPos = 
+			glm::vec3(-9.0f, 27.5f, 28.0f);
 		addPoint(-9.0f, 27.5f, 28.0f, 0.0f);
 		addPoint(-9.0f, 27.5f, 14.0f, 0.0f);
 		addPoint(0.0f, 27.5f, 14.0f, 0.0f);
