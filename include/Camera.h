@@ -126,6 +126,8 @@ public:
 		printf("TOUR::No of points %d\n", this->pos.size());
 		this->tourMode = true;
 		this->currentLoc = 0;
+		this->currentYawChange = 0.0f;
+		this->currentWaitTime = 0.0f;
 		this->Position = this->tourStartPos;
 
 		this->updateFocusToNextPoint();//start travelling towards pos[1]
@@ -162,24 +164,28 @@ private:
 	GLboolean tourMode;
 
 	GLuint currentLoc;
-	GLfloat currentWaitTime;
+	GLfloat currentWaitTime, currentYawChange;
 
 	glm::vec3 tourStartPos;
 	vector<glm::vec3> pos;
-	vector<GLfloat> wait;
+	vector<GLfloat> wait, yaw_change;
 
 	void initTour() {
 		this->tourStartPos = 
 			glm::vec3(-9.0f, 27.5f, 28.0f);
 		//-----------------------------------
-		addPoint(-9.0f, 27.5f, 28.0f, 0.0f);
-		addPoint(-9.0f, 27.5f, 14.0f, 2.0f);
-		addPoint(0.0f, 27.5f, 14.0f, 0.0f);
+		addPoint(-9.0f, 27.5f, 28.0f,  0.0f, -20.0f);
+		addPoint(-9.0f, 27.5f, 14.0f,  0.5f, -10.0f);
+		addPoint(-15.0f, 27.5f, 3.0f,  5.0f,  10.0f);
+		addPoint(-15.0f, 27.5f, 3.0f,  0.0f,  20.0f);
+		addPoint( -4.0f, 27.5f, 3.0f,  0.0f,  0.0f);//Approach Windmill 2
+		addPoint( -2.0f, 27.5f, -3.0f,  2.0f,  0.0f);//Observe it
 
 	}
-	void addPoint(GLfloat x, GLfloat y, GLfloat z, GLfloat w) {
+	void addPoint(GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLfloat d_yaw) {
 		this->pos.push_back(glm::vec3(x, y, z));
 		this->wait.push_back(w);
+		this->yaw_change.push_back(d_yaw);
 	}
 
 
@@ -212,6 +218,13 @@ private:
 		if (reachedDestination(this->currentLoc)) {
 			printf("TOUR::Reached Point %d\n", this->currentLoc);
 			//Once we have reached the point,
+			//Then rotate the screen to point the right way
+			if (abs(this->yaw_change[this->currentLoc]) > abs(this->currentYawChange)) {
+				this->changeYaw(deltaTime);
+				return;
+			}
+
+			//Once we have reached the point and rotated
 			//Have we waited the allocated time yet?
 			if (this->currentWaitTime >= this->wait[this->currentLoc]) {
 				this->updateFocusToNextPoint();
@@ -246,6 +259,16 @@ private:
 		return result;
 	}
 
+	void changeYaw(GLfloat deltaTime) {
+		GLfloat polarity = this->yaw_change[this->currentLoc] / abs(this->yaw_change[this->currentLoc]);
+		printf("TOUR::Yaw:: polarity for %f is %f\n", this->yaw_change[this->currentLoc], polarity);
+		GLfloat rotateSpeed = 6.0f * polarity;
+		GLfloat deltaYaw = rotateSpeed * deltaTime;  //this->yaw_change[this->currentLoc]/23;
+		this->Yaw += deltaYaw;
+		this->currentYawChange += deltaYaw;
+		this->updateCameraVectors();
+	}
+
 
 	void moveTowardsPoint(GLfloat deltaTime) {
 		GLfloat velocity = this->MovementSpeed * deltaTime;
@@ -271,6 +294,7 @@ private:
 		glm::vec3 delta = point - this->Position;
 		this->direction = normalise(delta);
 		this->currentWaitTime = 0.0f;
+		this->currentYawChange = 0.0f;
 		printf("TOUR:: Direction Now: (%f,%f,%f)\n",direction.x, direction.y, direction.z);
 	}
 

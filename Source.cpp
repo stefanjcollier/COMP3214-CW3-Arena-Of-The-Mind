@@ -142,8 +142,16 @@ int main()
 	sobutter.instantiate();
 	sbbutter.instantiate();
 
-	ButterflyFlock flock1(2.0f, 1.8f, glm::vec3(-5.0f, 2.0f, 0.0f), 6);
-	flock1.instantiate();
+	vector<ButterflyFlock> flocks;
+	flocks.push_back(ButterflyFlock::ButterflyFlock(2.0f, 1.8f, glm::vec3(-5.0f, 2.0f, 0.0f), 6));
+	flocks.push_back(ButterflyFlock::ButterflyFlock(4.0f, 1.3f, glm::vec3(5.0f, 2.0f, -10.0f), 8));
+	flocks.push_back(ButterflyFlock::ButterflyFlock(3.1f, 0.5f, glm::vec3(8.0f, 1.1f, 10.0f), 5));
+	flocks.push_back(ButterflyFlock::ButterflyFlock(6.0f, 3.0f, glm::vec3(-14.0f, 5.0f, -25.0f), 5));
+
+	for (GLuint flock = 0; flock < flocks.size(); flock++) {
+		flocks[flock].instantiate();
+	}
+
 
 	Island island;
 	island.instantiate();
@@ -251,8 +259,10 @@ int main()
 			windmill.draw(fancyLightShader);
 			lbbutter.draw(textureShader, pos + butter_offset + adjustment, glm::radians(30.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.5, 85);
 
+			for (GLuint flock = 0; flock < flocks.size(); flock++) {
+				flocks[flock].draw(textureShader);
+			}
 
-			flock1.draw(textureShader);
 
 
 			//Transparent objects are drawn last
@@ -273,7 +283,9 @@ int main()
 	sobutter.kill();
 	sbbutter.kill();
 
-	flock1.kill();
+	for (GLuint flock = 0; flock < flocks.size(); flock++) {
+		flocks[flock].kill();
+	}
 
 	island.kill();
 

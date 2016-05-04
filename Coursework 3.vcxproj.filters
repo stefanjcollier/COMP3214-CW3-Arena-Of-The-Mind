@@ -25,6 +25,9 @@
     <Filter Include="Header Files\butterflies">
       <UniqueIdentifier>{458d65b5-2a75-4bcf-a842-503696f2dea2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\landmass">
+      <UniqueIdentifier>{3e47b2e6-413d-4011-ab42-ea0dec7c920f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -65,17 +68,17 @@
     <ClInclude Include="include\objects\SmallOrangeButterfly.h">
       <Filter>Header Files\butterflies</Filter>
     </ClInclude>
-    <ClInclude Include="include\objects\Ground.h">
-      <Filter>Header Files\objects</Filter>
-    </ClInclude>
-    <ClInclude Include="include\objects\Island.h">
-      <Filter>Header Files\objects</Filter>
-    </ClInclude>
     <ClInclude Include="include\objects\LargeOrangeButterFly.h">
       <Filter>Header Files\butterflies</Filter>
     </ClInclude>
     <ClInclude Include="include\objects\ButterflyFlock.h">
       <Filter>Header Files\butterflies</Filter>
+    </ClInclude>
+    <ClInclude Include="include\objects\Ground.h">
+      <Filter>Header Files\landmass</Filter>
+    </ClInclude>
+    <ClInclude Include="include\objects\Island.h">
+      <Filter>Header Files\landmass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
