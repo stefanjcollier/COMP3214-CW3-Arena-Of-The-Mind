@@ -312,8 +312,15 @@ void do_movement()
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	if (keys[GLFW_KEY_RIGHT])
 		camera.ProcessKeyboard(RIGHT, deltaTime);
+	
 	if (keys[GLFW_KEY_SPACE])
 		camera.stopCamera();
+	if (keys[GLFW_KEY_T])
+		camera.startTour();
+	if (keys[GLFW_KEY_E])
+		camera.endTour();
+
+
 	camera.updatePosition(deltaTime);
 }
 /*
