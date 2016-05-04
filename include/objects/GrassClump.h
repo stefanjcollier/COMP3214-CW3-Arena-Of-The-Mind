@@ -10,8 +10,9 @@
 
 Grass2D grass(0.5f,0.5f);
 
-class GrassClumps {
+class GrassClump {
 public:
+	
 	/*
 	* Create the data
 	*/

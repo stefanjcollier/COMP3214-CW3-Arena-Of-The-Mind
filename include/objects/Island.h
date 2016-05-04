@@ -3,8 +3,8 @@
 
 //My includes
 #include "Shader.h"
-#include "Ground.h"
 #include "GrassClump.h"
+#include "Ground.h"
 
 Ground ground(100.0f, 80, glm::vec3(0.1f, 1.0f, 0.1f));
 
@@ -12,10 +12,11 @@ class Island {
 public:
 
 	void instantiate() {
+		clumps.instantiate();
 		ground.instantiate();
 	}
 
-	void draw(Shader shader) {
+	void draw(Shader shader, Shader textureShader) {
 		shader.Use();
 		GLint modelLoc = glGetUniformLocation(shader.Program, "model");
 		glm::mat4 model;
@@ -23,9 +24,11 @@ public:
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 		ground.draw(shader);
+		clumps.draw(textureShader);
 	}
 
 	void kill() {
+		clumps.kill();
 		ground.kill();
 	}
 

@@ -17,6 +17,9 @@ using namespace std;
 
 //My includes
 #include "Shader.h"
+#include "GrassClump.h"
+
+GrassClump clumps;
 
 class Ground {
 public:
@@ -36,7 +39,6 @@ public:
 
 		//fill the buffers
 		makeBuffers();
-
 	}
 
 	void draw(Shader shader) {
@@ -65,7 +67,7 @@ private:
 	GLfloat width;
 	GLuint nodes;
 	glm::vec3 baseColor;
-	
+
 	void setColor(Shader shader, glm::vec3 color) {
 		GLint objectColorLoc = glGetUniformLocation(shader.Program, "objectColor");
 		glUniform3f(objectColorLoc, color.x, color.y, color.z);
@@ -75,13 +77,16 @@ private:
 	void populateData() {
 		GLfloat start = -this->width/2;
 		GLfloat inc = this->width / this->nodes;
-
+		GLfloat x, y, z;
 		for (GLuint xnode = 0; xnode < this->nodes; xnode++) {
 			for (GLuint znode = 0; znode < this->nodes; znode++) {
-				this->addToData(
-					start + xnode*inc,
-					this->getRand(0,0.5),
-					start + znode+inc);
+				x = start + xnode*inc;
+				y = this->getRand(0, 0.5);
+				z =	start + znode+inc;
+
+				this->addToData(x, y, z);
+
+				this->potentiallyAddGrass(x, y, z);
 			}
 
 		}
@@ -149,6 +154,14 @@ private:
 	GLfloat getRand(GLfloat LO, GLfloat HI) {
 		return LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
 	}
+
+	void potentiallyAddGrass(GLfloat x, GLfloat y, GLfloat z) {
+		//if (getRand(0,4) < 1.0f) { //1 in 4 chance of grass
+			clumps.addClump(glm::vec3(x, y, z));
+	//	}
+	}
+
+
 
 };
 

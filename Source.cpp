@@ -44,7 +44,7 @@
 ***************************************************************/
 //This method will change the scene between A-E
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-//void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 //void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void do_movement();
 
@@ -64,20 +64,6 @@ glm::vec3 lightPos(50.0f, 100.0f, 2.0f);
 // Deltatime
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
 GLfloat lastFrame = 0.0f;  	// Time of last frame
-
-//Control of precision of circle curve
-const GLuint nodes = 51;
-
-
-/**************************************************************
-********************[  Function Outlines  ]***********************
-***************************************************************/
-GLuint indices[6 * nodes*nodes];
-GLuint indicesIndex = 0;
-void addIndx(GLuint value) {
-	indices[indicesIndex] = value;
-	indicesIndex++;
-}
 
 
 /**************************************************************
@@ -102,11 +88,11 @@ int main()
 
 	// Set the required callback functions
 	glfwSetKeyCallback(window, key_callback);
-	//glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
 	//glfwSetScrollCallback(window, scroll_callback);
 
 	// GLFW Options
-	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Set this to  true so GLEW knows to use a modern approach to retrieving function pointers and extensions
 	glewExperimental = GL_TRUE;
@@ -124,7 +110,6 @@ int main()
 	Shader fancyLightShader("resources/shaders/lightShader.vs", "resources/shaders/lightShader.frag");
 	Shader textureShader("resources/shaders/textureShader.vs", "resources/shaders/textureShader.frag");
 
-	Sphere genericSphere(nodes);
 	GLfloat scale = 7;
 	Windmill windmill(12.0f/scale, 16.0f/scale, 14.0f/scale, 50.0f/ scale, 10.0f/ scale, glm::vec3(0.75f,0.75f,0.0f), glm::vec3(0.75f, 0.1f, 0.0f) );
 	windmill.instantiate();
@@ -229,7 +214,7 @@ int main()
 		fancyLightShader.Use();
 
 
-			island.draw(fancyLightShader);
+			island.draw(fancyLightShader,textureShader);
 
 			fancyLightShader.Use();
 			glm::mat4 model1;
@@ -334,7 +319,7 @@ void do_movement()
 
 	camera.updatePosition(deltaTime);
 }
-/*
+
 bool firstMouse = true;
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -352,7 +337,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	lastY = ypos;
 
 	camera.ProcessMouseMovement(xoffset, yoffset);
-}*/
+}
 /*
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
