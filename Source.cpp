@@ -45,8 +45,8 @@
 ***************************************************************/
 //This method will change the scene between A-E
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+//void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+//void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void do_movement();
 
 // Window dimensions
@@ -103,11 +103,11 @@ int main()
 
 	// Set the required callback functions
 	glfwSetKeyCallback(window, key_callback);
-	glfwSetCursorPosCallback(window, mouse_callback);
-	glfwSetScrollCallback(window, scroll_callback);
+	//glfwSetCursorPosCallback(window, mouse_callback);
+	//glfwSetScrollCallback(window, scroll_callback);
 
 	// GLFW Options
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	// Set this to  true so GLEW knows to use a modern approach to retrieving function pointers and extensions
 	glewExperimental = GL_TRUE;
@@ -221,27 +221,6 @@ int main()
 		***************************************************************/
 		fancyLightShader.Use();
 
-		/* //-------------[ Bullet Spheres ]-----------------
-		glBindVertexArray(VAO);
-		GLfloat allPos[99];
-		for (GLuint modelNo = 0; modelNo < MovingBits.size(); modelNo++) {
-			glm::vec3 col = colours[modelNo];
-			glUniform3f(objectColorLoc, col.x, col.y, col.z);
-
-			glm::mat4 model;
-			glm::vec3 pos = bullet_step(modelNo);
-			allPos[modelNo * 3 + 0] = pos[0];
-			allPos[modelNo * 3 + 1] = pos[1];
-			allPos[modelNo * 3 + 2] = pos[2];
-
-			model = glm::translate(model, pos);
-			model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-			glDrawElements(GL_TRIANGLES, indicesIndex, GL_UNSIGNED_INT, 0);
-		}
-		glBindVertexArray(0);
-		*/
 
 			island.draw(fancyLightShader);
 
@@ -333,8 +312,11 @@ void do_movement()
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	if (keys[GLFW_KEY_RIGHT])
 		camera.ProcessKeyboard(RIGHT, deltaTime);
+	if (keys[GLFW_KEY_SPACE])
+		camera.stopCamera();
+	camera.updatePosition(deltaTime);
 }
-
+/*
 bool firstMouse = true;
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -352,10 +334,11 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	lastY = ypos;
 
 	camera.ProcessMouseMovement(xoffset, yoffset);
-}
-
+}*/
+/*
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	camera.ProcessMouseScroll(yoffset);
 }
 
+*/

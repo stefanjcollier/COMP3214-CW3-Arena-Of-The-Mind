@@ -25,6 +25,7 @@ const GLfloat SPEED = 10.0f;
 const GLfloat SENSITIVTY = 0.1f;
 const GLfloat ZOOM = 45.0f;
 
+const GLfloat MAX_SPEED = 5.0f;
 
 // An abstract camera class that processes input and calculates the corresponding Eular Angles, Vectors and Matrices for use in OpenGL
 class Camera
@@ -52,6 +53,7 @@ public:
 		this->Yaw = yaw;
 		this->Pitch = pitch;
 		this->updateCameraVectors();
+		this->MovementSpeed = 0.0f;
 	}
 	// Constructor with scalar values
 	Camera(GLfloat posX, GLfloat posY, GLfloat posZ, GLfloat upX, GLfloat upY, GLfloat upZ, GLfloat yaw, GLfloat pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVTY), Zoom(ZOOM)
@@ -61,6 +63,7 @@ public:
 		this->Yaw = yaw;
 		this->Pitch = pitch;
 		this->updateCameraVectors();
+		this->MovementSpeed = 0.0f;
 	}
 
 	// Returns the view matrix calculated using Eular Angles and the LookAt Matrix
@@ -72,16 +75,33 @@ public:
 	// Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
 	void ProcessKeyboard(Camera_Movement direction, GLfloat deltaTime)
 	{
-		GLfloat velocity = this->MovementSpeed * deltaTime;
+		GLfloat deltaYaw = 0.2f;
+		GLfloat deltaV = 0.1f;
 		if (direction == FORWARD)
-			this->Position += this->Front * velocity;
+			this->MovementSpeed += deltaV;
 		if (direction == BACKWARD)
-			this->Position -= this->Front * velocity;
-		if (direction == LEFT)
-			this->Position -= this->Right * velocity;
-		if (direction == RIGHT)
-			this->Position += this->Right * velocity;
+			this->MovementSpeed -= deltaV;
 
+		if (this->MovementSpeed > MAX_SPEED)
+			this->MovementSpeed = MAX_SPEED;
+		if (this->MovementSpeed < -MAX_SPEED/2)
+			this->MovementSpeed = -MAX_SPEED/2;
+
+		if (direction == LEFT){
+			this->Yaw -= deltaYaw;
+			this->updateCameraVectors();
+		}
+		if (direction == RIGHT) {
+			this->Yaw += deltaYaw;
+			this->updateCameraVectors();
+		}
+	}
+
+	void updatePosition(GLfloat deltaTime) {
+		GLfloat velocity = this->MovementSpeed * deltaTime;
+		this->Position += this->Front * velocity;
+
+		//Stefan's check to make sure that they do not go beneath the floor
 		GLfloat floor = 26.0f;
 		if (this->Position.y < floor) {
 			this->Position.y = floor;
@@ -108,6 +128,10 @@ public:
 
 		// Update Front, Right and Up Vectors using the updated Eular angles
 		this->updateCameraVectors();
+	}
+
+	void stopCamera() {
+		this->MovementSpeed = 0.0f;
 	}
 
 	// Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
