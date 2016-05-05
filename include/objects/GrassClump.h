@@ -65,8 +65,8 @@ private:
 	void addSingleClump(glm::vec3 pos, glm::vec3 oldX, glm::vec3 oldZ) {
 		//Interpolate a random point between the two
 		GLfloat ran = getRand(0.0f, 1.0f);
-		glm::vec3 ran_mid = oldX + (pos - oldX) * ran;
-		ran_mid.x = oldZ.x + (pos.x - oldZ.x) * ran;
+		glm::vec3 ran_mid = oldZ + (pos - oldZ) * ran;
+		ran_mid.x = oldX.x + (pos.x - oldX.x) * ran;
 		clumps.push_back(ran_mid);
 	}
 

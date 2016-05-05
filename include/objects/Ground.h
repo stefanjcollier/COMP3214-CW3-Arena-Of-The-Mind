@@ -88,11 +88,21 @@ private:
 				this->addToData(x, y, z);
 
 				//Grass stuff
+				///   | 0   1   2   3
+				///---|-------------------
+				/// 0 | o   o   o   o
+				///   |         ^
+				/// 1 | o   o < x   o
+				///   |
+				/// 2 | o   o   o   o
+				//0th row and column have no previous cells (as shown in diagram above)
 				if(xnode > 0 && znode > 0){
 					//Given the last node is on the same point
 					clumps.addClump(glm::vec3(x, y, z), this->lastXPos, this->lastZs[xnode]);
 				}
+				//populate the lastZs
 				if (znode == 0) {
+					//We must populate it during the first row before we reference it
 					this->lastZs.push_back(glm::vec3(x, y, z));
 				}
 				else {

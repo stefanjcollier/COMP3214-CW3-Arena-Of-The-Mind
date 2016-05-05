@@ -59,7 +59,7 @@ bool keys[1024];
 bool showPos = true;
 
 // Light attributes
-glm::vec3 lightPos(50.0f, 100.0f, 2.0f);
+glm::vec3 lightPos(50.0f, 30.0f, 2.0f);
 
 // Deltatime
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
@@ -219,7 +219,7 @@ int main()
 			fancyLightShader.Use();
 			glm::mat4 model1;
 			glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f);
-			glm::vec3 butter_offset = glm::vec3(0.0f, 3.0f, 1.8f);
+			glm::vec3 butter_offset = glm::vec3(0.0f, 3.0f, 1.9f);
 			model1 = glm::translate(model1, pos);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model1));
 			windmill.draw(fancyLightShader);
@@ -227,21 +227,21 @@ int main()
 
 			fancyLightShader.Use();
 			glm::mat4 model2;
-			pos = glm::vec3(13.0f, 0.0f, -12.0f);
+			pos = glm::vec3(13.0f, 0.0f, -11.9f);
 			model2 = glm::translate(model2, pos);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model2));
 			windmill.draw(fancyLightShader);
-			lbbutter.draw(textureShader, pos+butter_offset, 0.0f, glm::vec3(0.0f, 0.0f, 0.0f), 0.9, 0);
+			lbbutter.draw(textureShader, pos+butter_offset, 0.0f, glm::vec3(0.0f, 0.0f, 0.0f), 1.2, 0);
 
 
 			fancyLightShader.Use();
 			glm::mat4 model3;
-			pos = glm::vec3(-14.0f, 0.0f, -25.0f);
+			pos = glm::vec3(-14.0f, 0.0f, -24.6f);
 			glm::vec3 adjustment(1.5f, 0.0f, 0.0f);
 			model3 = glm::translate(model3, pos);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model3));
 			windmill.draw(fancyLightShader);
-			lbbutter.draw(textureShader, pos + butter_offset + adjustment, glm::radians(30.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.5, 85);
+			lbbutter.draw(textureShader, pos + butter_offset + adjustment, glm::radians(20.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.8, 40);
 
 			for (GLuint flock = 0; flock < flocks.size(); flock++) {
 				flocks[flock].draw(textureShader);

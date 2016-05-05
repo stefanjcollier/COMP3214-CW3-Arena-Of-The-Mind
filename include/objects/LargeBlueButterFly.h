@@ -37,8 +37,10 @@ public:
 		}
 
 		wingModel2 = glm::rotate(wingModel2, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-		GLfloat angle = glm::sin(glfwGetTime() * speed + glm::radians(offsetDegrees));//Keeps it to 0 -> 90deg rather that 0 -> 180deg
+		//max = 30
+		GLfloat min = 30.0;
+		GLfloat deg = (90.0-min)/2;
+		GLfloat angle = glm::radians(deg * glm::sin(glfwGetTime() * speed + offsetDegrees)+2*min);//Keeps it to 0 -> 90deg rather that 0 -> 180deg
 		if (angle > 0) {
 			angle = angle*-1;
 		}
