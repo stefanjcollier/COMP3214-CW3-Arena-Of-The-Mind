@@ -35,8 +35,8 @@
 #include "ButterflyFlock.h"
 
 #include "Island.h"
-#include "Cloud.h"
-
+#include "AllClouds.h"
+#include "Showcase.h"
 
 
 
@@ -144,9 +144,13 @@ int main()
 
 	Island island;
 	island.instantiate();
+	 
+	AllClouds allcloud;
+	allcloud.instantiate();
 
-	Cloud cloud(20.0f, 10.0f);
-	cloud.instantiate();
+	Showcase showcase;
+	showcase.instantiate();
+
 	/**************************************************************
 	********************[  Skybox ]*******************
 	***************************************************************/
@@ -296,13 +300,8 @@ int main()
 
 
 			island.draw(fancyLightShader,textureShader);
-			glm::mat4 modelA;
-			glm::vec3 pos2 = glm::vec3(0.0f, 4.0f,5.0f);
-			modelA = glm::translate(modelA, pos2);
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelA));
-
-			cloud.draw(textureShader);
-			//cube.draw(textureShader);
+			
+			allcloud.draw(textureShader);
 
 
 			fancyLightShader.Use();
@@ -336,6 +335,7 @@ int main()
 				flocks[flock].draw(textureShader);
 			}
 
+			showcase.draw(fancyLightShader, textureShader, glm::vec3(-1.5f, 1.5f, 21.0f));
 
 
 			//Transparent objects are drawn last
@@ -376,7 +376,8 @@ int main()
 	}
 
 	island.kill();
-	cloud.kill();
+	allcloud.kill();
+	showcase.kill();
 
 	// Terminate GLFW, clearing any resources allocated by GLFW.
 	glfwTerminate();

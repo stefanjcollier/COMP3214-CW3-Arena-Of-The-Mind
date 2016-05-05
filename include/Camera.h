@@ -194,8 +194,8 @@ private:
 		this->tourStartPos = 
 			glm::vec3(-9.0f, 27.5f, 28.0f);
 		//-----------------------------------
-		addPoint(-9.0f, 27.5f, 28.0f,  0.0f, -20.0f);
-		addPoint(-9.0f, 27.5f, 14.0f,  0.5f, -10.0f);
+		addPoint(-9.0f, 27.5f, 28.0f,  2.0f,  0.0f);
+		addPoint(-9.0f, 27.5f, 14.0f,  2.0f, -10.0f);
 		addPoint(-15.0f, 27.5f, 3.0f,  5.0f,  10.0f);
 		addPoint(-15.0f, 27.5f, 3.0f,  0.0f,  20.0f);
 		addPoint( -4.0f, 27.5f, 3.0f,  0.0f,  0.0f);//Approach Windmill 2
@@ -238,10 +238,7 @@ private:
 		if (reachedDestination(this->currentLoc)) {
 			//Once we have reached the point,
 			//Then rotate the screen to point the right way
-			if (abs(this->yaw_change[this->currentLoc]) > abs(this->currentYawChange)) {
-				this->changeYaw(deltaTime);
-				return;
-			}
+
 
 			//Once we have reached the point and rotated
 			//Have we waited the allocated time yet?
@@ -255,6 +252,11 @@ private:
 		}
 		else { //Travel to destination
 			this->moveTowardsPoint(deltaTime);
+			if (abs(this->yaw_change[this->currentLoc]) > abs(this->currentYawChange)) {
+				this->changeYaw(deltaTime);
+			}
+
+
 		}
 	}
 	// A point has reached it destination when each element of the camera location in the equation
@@ -276,7 +278,7 @@ private:
 	}
 
 	void changeYaw(GLfloat deltaTime) {
-		GLfloat polarity = this->yaw_change[this->currentLoc] / abs(this->yaw_change[this->currentLoc]);
+		GLfloat polarity = this->yaw_change[this->currentLoc] / abs(this->yaw_change[this->currentLoc]);  //Are we look left (-1) or right (1)
 		GLfloat rotateSpeed = 6.0f * polarity;
 		GLfloat deltaYaw = rotateSpeed * deltaTime;  //this->yaw_change[this->currentLoc]/23;
 		this->Yaw += deltaYaw;

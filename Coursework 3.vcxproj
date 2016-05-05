@@ -120,8 +120,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Camera.h" />
+    <ClInclude Include="include\objects\AllClouds.h" />
     <ClInclude Include="include\objects\BlueWing.h" />
     <ClInclude Include="include\objects\ButterflyFlock.h" />
+    <ClInclude Include="include\objects\Case.h" />
     <ClInclude Include="include\objects\Cloud.h" />
     <ClInclude Include="include\objects\Cube.h" />
     <ClInclude Include="include\objects\Grass2D.h" />
@@ -131,6 +133,8 @@
     <ClInclude Include="include\objects\LargeBlueButterFly.h" />
     <ClInclude Include="include\objects\LargeOrangeButterFly.h" />
     <ClInclude Include="include\objects\OrangeWing.h" />
+    <ClInclude Include="include\objects\Painting.h" />
+    <ClInclude Include="include\objects\Showcase.h" />
     <ClInclude Include="include\objects\SmallBlueButterfly.h" />
     <ClInclude Include="include\objects\SmallOrangeButterfly.h" />
     <ClInclude Include="include\objects\Windmill.h" />

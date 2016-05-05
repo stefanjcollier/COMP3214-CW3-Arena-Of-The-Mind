@@ -1,5 +1,5 @@
-#ifndef CLOUD
-#define CLOUD
+#ifndef PAINTING_H
+#define PAINTING_H
 
 
 
@@ -24,9 +24,9 @@ using namespace std;
 
 
 
-class Cloud {
+class Painting {
 public:
-	Cloud(GLfloat w, GLfloat h) {
+	Painting(GLfloat w, GLfloat h) {
 		this->width = w;
 		this->height = h;
 	}
@@ -49,6 +49,7 @@ public:
 	}
 
 	void draw(Shader textureshader) {
+		textureshader.Use();
 		glBindVertexArray(this->VAO);
 
 		glActiveTexture(GL_TEXTURE0);
@@ -77,18 +78,12 @@ private:
 
 
 
-	void setColor(Shader shader, glm::vec3 color) {
-		GLint objectColorLoc = glGetUniformLocation(shader.Program, "objectColor");
-		glUniform3f(objectColorLoc, color.x, color.y, color.z);
-	}
-
-
 	void populateDataAndIndices() {
 		//Right Wing
 		GLfloat x_off = 0.0;
 		this->addToData(x_off + 0.0f, 0.0f, 0.0f, 0.999f, 0.0f);
-		this->addToData(x_off + 0.0f, 0.0f, height,  0.999f, 0.999f);
-		this->addToData(x_off + width, 0.0f, height,  0.0f, 0.999f);
+		this->addToData(x_off + 0.0f, height, 0.0f, 0.999f, 0.999f);
+		this->addToData(x_off + width, height, 0.0f, 0.0f, 0.999f);
 		this->addToData(x_off + width, 0, 0.0f, 0.0f, 0.0f);
 
 		this->addToIndexes(0, 1, 2);
@@ -109,7 +104,7 @@ private:
 
 		// Load, create texture and generate mipmaps
 		int width, height, comp;
-		unsigned char* image = stbi_load("resources/textures/cloud.png", &width, &height, &comp, STBI_rgb_alpha);
+		unsigned char* image = stbi_load("resources/textures/painting.jpg", &width, &height, &comp, STBI_rgb);
 		if (image == nullptr)
 			throw(std::string("Failed to load texture"));
 

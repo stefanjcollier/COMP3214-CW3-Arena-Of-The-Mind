@@ -28,6 +28,9 @@
     <Filter Include="Header Files\landmass">
       <UniqueIdentifier>{3e47b2e6-413d-4011-ab42-ea0dec7c920f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\painting">
+      <UniqueIdentifier>{84bc1ae5-094c-4c5f-893d-b9b4461827cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -91,6 +94,18 @@
     </ClInclude>
     <ClInclude Include="include\objects\Cloud.h">
       <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\objects\AllClouds.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\objects\Case.h">
+      <Filter>Header Files\painting</Filter>
+    </ClInclude>
+    <ClInclude Include="include\objects\Painting.h">
+      <Filter>Header Files\painting</Filter>
+    </ClInclude>
+    <ClInclude Include="include\objects\Showcase.h">
+      <Filter>Header Files\painting</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
