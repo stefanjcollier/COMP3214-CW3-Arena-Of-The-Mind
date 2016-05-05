@@ -66,7 +66,8 @@ private:
 	
 	GLfloat width;
 	GLuint nodes;
-	glm::vec3 baseColor;
+	glm::vec3 baseColor, lastXPos;
+	vector<glm::vec3> lastZs;
 
 	void setColor(Shader shader, glm::vec3 color) {
 		GLint objectColorLoc = glGetUniformLocation(shader.Program, "objectColor");
@@ -76,19 +77,28 @@ private:
 
 	void populateData() {
 		GLfloat start = -this->width/2;
-		GLfloat inc = this->width / this->nodes;
+		GLfloat inc = this->width / float(this->nodes);
 		GLfloat x, y, z;
 		for (GLuint xnode = 0; xnode < this->nodes; xnode++) {
-			for (GLuint znode = 0; znode < this->nodes; znode++) {
+		for (GLuint znode = 0; znode < this->nodes; znode++) {
 				x = start + xnode*inc;
+				z = start + znode*inc;
 				y = this->getRand(0, 0.5);
-				z =	start + znode+inc;
 
 				this->addToData(x, y, z);
 
-				this->potentiallyAddGrass(x, y, z);
+				//Grass stuff
+				if(xnode > 0 && znode > 0){
+					//Given the last node is on the same point
+					clumps.addClump(glm::vec3(x, y, z), this->lastXPos, this->lastZs[xnode]);
+				}
+				if (znode == 0) {
+					this->lastZs.push_back(glm::vec3(x, y, z));
+				}
+				else {
+					this->lastZs[xnode] = glm::vec3(x, y, z);
+				}
 			}
-
 		}
 	}
 
@@ -155,11 +165,7 @@ private:
 		return LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
 	}
 
-	void potentiallyAddGrass(GLfloat x, GLfloat y, GLfloat z) {
-		//if (getRand(0,4) < 1.0f) { //1 in 4 chance of grass
-			clumps.addClump(glm::vec3(x, y, z));
-	//	}
-	}
+
 
 
 
