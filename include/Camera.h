@@ -169,7 +169,7 @@ public:
 	}
 
 	void goToPerfectView() {
-		if (!this->tourMode) return;
+		if (this->tourMode) return;
 
 		this->Position = this->tourStartPos + glm::vec3(-3.0f,5.0f,-9.0f);
 		this->Yaw += 3.0f;

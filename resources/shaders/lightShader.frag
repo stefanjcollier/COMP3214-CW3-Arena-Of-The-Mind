@@ -12,7 +12,7 @@ uniform float isDay;
 void main()
 {
 	    // Ambient
-		float ambientStrength = 0.2f + (0.10f * isDay);
+		float ambientStrength = 0.2f + (0.095f * isDay);
 		vec3 ambient = ambientStrength * lightColor;
 
 		// Diffuse 
