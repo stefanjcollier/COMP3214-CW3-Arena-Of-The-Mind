@@ -35,6 +35,7 @@
 #include "ButterflyFlock.h"
 
 #include "Island.h"
+#include "Cloud.h"
 
 
 
@@ -118,7 +119,7 @@ int main()
 	Windmill windmill(12.0f/scale, 16.0f/scale, 14.0f/scale, 50.0f/ scale, 10.0f/ scale, glm::vec3(0.75f,0.75f,0.0f), glm::vec3(0.75f, 0.1f, 0.0f) );
 	windmill.instantiate();
 
-	Cube cube(3);
+	Cube cube(1.5f);
 	cube.instantiate();
 
 	LargeOrangeButterfly lobutter;
@@ -143,6 +144,9 @@ int main()
 
 	Island island;
 	island.instantiate();
+
+	Cloud cloud(20.0f, 10.0f);
+	cloud.instantiate();
 	/**************************************************************
 	********************[  Skybox ]*******************
 	***************************************************************/
@@ -292,6 +296,14 @@ int main()
 
 
 			island.draw(fancyLightShader,textureShader);
+			glm::mat4 modelA;
+			glm::vec3 pos2 = glm::vec3(0.0f, 4.0f,5.0f);
+			modelA = glm::translate(modelA, pos2);
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(modelA));
+
+			cloud.draw(textureShader);
+			//cube.draw(textureShader);
+
 
 			fancyLightShader.Use();
 			glm::mat4 model1;
@@ -364,7 +376,7 @@ int main()
 	}
 
 	island.kill();
-
+	cloud.kill();
 
 	// Terminate GLFW, clearing any resources allocated by GLFW.
 	glfwTerminate();

@@ -89,6 +89,9 @@
     <ClInclude Include="include\objects\OrangeWing.h">
       <Filter>Header Files\butterflies</Filter>
     </ClInclude>
+    <ClInclude Include="include\objects\Cloud.h">
+      <Filter>Header Files\objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\lightShader.frag">
@@ -112,6 +115,9 @@
       <Filter>Resource Files\textures</Filter>
     </Image>
     <Image Include="resources\textures\grass.png">
+      <Filter>Resource Files\textures</Filter>
+    </Image>
+    <Image Include="resources\textures\cloud.png">
       <Filter>Resource Files\textures</Filter>
     </Image>
   </ItemGroup>

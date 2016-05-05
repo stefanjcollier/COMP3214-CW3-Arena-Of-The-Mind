@@ -122,6 +122,7 @@
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\objects\BlueWing.h" />
     <ClInclude Include="include\objects\ButterflyFlock.h" />
+    <ClInclude Include="include\objects\Cloud.h" />
     <ClInclude Include="include\objects\Cube.h" />
     <ClInclude Include="include\objects\Grass2D.h" />
     <ClInclude Include="include\objects\GrassClump.h" />
@@ -146,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\blue_wing.png" />
+    <Image Include="resources\textures\cloud.png" />
     <Image Include="resources\textures\grass.png" />
     <Image Include="resources\textures\orange_wing.png" />
   </ItemGroup>

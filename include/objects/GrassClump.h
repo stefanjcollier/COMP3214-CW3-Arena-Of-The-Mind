@@ -29,8 +29,8 @@ public:
 			glm::vec3 clumpLoc = this->clumps[clump];
 			model = glm::translate(model, glm::vec3(0.0f, -0.10f, 0.0f)+clumpLoc);
 
-			//model = glm::rotate(model, this->findAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
-			//model = glm::translate(model, glm::vec3(-grass.getWidth()/2, 0.0f, 0.0f));
+			model = glm::rotate(model, this->findAngle(), glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(-grass.getWidth()/2, 0.0f, 0.0f));
 			glUniformMatrix4fv(texModelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			grass.draw(textureShader);
 

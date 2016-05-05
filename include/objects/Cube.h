@@ -181,7 +181,7 @@ private:
 
 		// Load, create texture and generate mipmaps
 		int width, height, comp;
-		unsigned char* image = stbi_load("resources/textures/orange_wing.png", &width, &height, &comp, STBI_rgb_alpha);
+		unsigned char* image = stbi_load("resources/textures/cloud.png", &width, &height, &comp, STBI_rgb_alpha);
 		if (image == nullptr)
 			throw(std::string("Failed to load texture"));
 

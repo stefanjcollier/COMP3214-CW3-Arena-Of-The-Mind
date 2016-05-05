@@ -113,6 +113,7 @@ public:
 
 	void endTour() {
 		if (!this->tourMode) return;
+
 		this->tourMode = false;
 		this->Pitch = PITCH;
 		this->stopCamera();
