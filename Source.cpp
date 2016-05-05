@@ -45,9 +45,12 @@
 //This method will change the scene between A-E
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
-//void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-void do_movement();
 
+GLuint loadCubemap(vector<const GLchar*> faces);
+
+void do_movement();
+void moveSun(Shader lightShader, Island island, Cube cube);
+void handleDayOrNight(GLfloat y, Shader lightShader);
 // Window dimensions
 const GLuint WIDTH = 2*800, HEIGHT = 2*600;
 
@@ -59,7 +62,7 @@ bool keys[1024];
 bool showPos = true;
 
 // Light attributes
-glm::vec3 lightPos(50.0f, 30.0f, 2.0f);
+glm::vec3 lightPos(50.0f, 100.0f, 2.0f);
 
 // Deltatime
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
@@ -109,6 +112,7 @@ int main()
 	// Build and compile our shader program
 	Shader fancyLightShader("resources/shaders/lightShader.vs", "resources/shaders/lightShader.frag");
 	Shader textureShader("resources/shaders/textureShader.vs", "resources/shaders/textureShader.frag");
+	Shader skyboxShader("resources/shaders/skybox.vs", "resources/shaders/skybox.frag");
 
 	GLfloat scale = 7;
 	Windmill windmill(12.0f/scale, 16.0f/scale, 14.0f/scale, 50.0f/ scale, 10.0f/ scale, glm::vec3(0.75f,0.75f,0.0f), glm::vec3(0.75f, 0.1f, 0.0f) );
@@ -139,7 +143,75 @@ int main()
 
 	Island island;
 	island.instantiate();
+	/**************************************************************
+	********************[  Skybox ]*******************
+	***************************************************************/
+	GLfloat skyboxVertices[] = {
+		// Positions          
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
 
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		-1.0f,  1.0f, -1.0f,
+		1.0f,  1.0f, -1.0f,
+		1.0f,  1.0f,  1.0f,
+		1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		1.0f, -1.0f,  1.0f
+	};
+	// Setup skybox VAO
+	GLuint skyboxVAO, skyboxVBO;
+	glGenVertexArrays(1, &skyboxVAO);
+	glGenBuffers(1, &skyboxVBO);
+	glBindVertexArray(skyboxVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glBindVertexArray(0);
+
+	// Cubemap (Skybox)
+	vector<const GLchar*> faces;
+
+	faces.push_back("resources/skybox/right.jpg");
+	faces.push_back("resources/skybox/left.jpg");
+	faces.push_back("resources/skybox/top.jpg");
+	faces.push_back("resources/skybox/bottom.jpg");
+	faces.push_back("resources/skybox/back.jpg");
+	faces.push_back("resources/skybox/front.jpg");
+
+	GLuint cubemapTexture = loadCubemap(faces);
 
 	/**************************************************************
 	********************[  GAME LOOP ]*******************
@@ -189,6 +261,7 @@ int main()
 		GLint modelLoc = glGetUniformLocation(fancyLightShader.Program, "model");
 		GLint viewLoc = glGetUniformLocation(fancyLightShader.Program, "view");
 		GLint projLoc = glGetUniformLocation(fancyLightShader.Program, "projection");
+		GLint isDayLoc = glGetUniformLocation(fancyLightShader.Program, "isDay");
 
 		// Pass the matrices to the shader
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -207,11 +280,15 @@ int main()
 		glUniformMatrix4fv(texprojLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniform3f(vtexViewPosLoc, camera.Position.x, camera.Position.y, camera.Position.z);
 
+		/**************************************************************
+		********************[  Move Sun ]*******************
+		***************************************************************/
+		fancyLightShader.Use();
+		moveSun(fancyLightShader, island, cube);
 
 		/**************************************************************
 		********************[  Drawing Time! ]*******************
 		***************************************************************/
-		fancyLightShader.Use();
 
 
 			island.draw(fancyLightShader,textureShader);
@@ -255,6 +332,21 @@ int main()
 
 
 
+		// Draw skybox as last
+		glDepthFunc(GL_LEQUAL);  // Change depth function so depth test passes when values are equal to depth buffer's content
+		skyboxShader.Use();
+		glm::mat4 skyview = glm::mat4(glm::mat3(camera.GetViewMatrix()));	// Remove any translation component of the view matrix
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.Program, "view"), 1, GL_FALSE, glm::value_ptr(skyview));
+		glUniformMatrix4fv(glGetUniformLocation(skyboxShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+		// skybox cube
+		glBindVertexArray(skyboxVAO);
+		glActiveTexture(GL_TEXTURE0);
+		glUniform1i(glGetUniformLocation(skyboxShader.Program, "texture_diffuse1"), 0);
+		glUniform1i(glGetUniformLocation(skyboxShader.Program, "skybox"), 0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+		glDepthFunc(GL_LESS); // Set depth function back to default
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
@@ -311,6 +403,9 @@ void do_movement()
 	
 	if (keys[GLFW_KEY_SPACE])
 		camera.stopCamera();
+	if (keys[GLFW_KEY_P])
+		camera.goToPerfectView();
+
 	if (keys[GLFW_KEY_T])
 		camera.startTour();
 	if (keys[GLFW_KEY_E])
@@ -338,10 +433,74 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 
 	camera.ProcessMouseMovement(xoffset, yoffset);
 }
-/*
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	camera.ProcessMouseScroll(yoffset);
+
+void moveSun(Shader lightShader, Island island, Cube cube) {
+	GLfloat x, y;
+	x = -island.getWidth() / 2 + island.getWidth()*glm::sin(glm::radians(glfwGetTime()*4));
+	y = -island.getWidth() / 2 + island.getWidth()*glm::sin(glm::radians(glfwGetTime()*4)+90.0f);
+
+	//y = island.getWidth()/2*  glm::sin(glfwGetTime()/2);
+	GLint lightPosLoc = glGetUniformLocation(lightShader.Program, "lightPos");
+	glUniform3f(lightPosLoc, x, y, lightPos.z);
+
+	GLint modelLoc = glGetUniformLocation(lightShader.Program, "model");
+	glm::mat4 modelX, modelY;
+	modelX = glm::translate(modelX, glm::vec3(x, 4.0f, 3.0f));
+	modelY = glm::translate(modelY, glm::vec3(x, y, 3.0f));
+	
+	handleDayOrNight(y, lightShader);
 }
 
-*/
+//Use of the boool reduces the number of computations needed
+GLboolean isDay = true;
+void handleDayOrNight(GLfloat y, Shader lightShader) {
+	//if isDay and now y < 0  => isDay = false
+	if (isDay && y < 0) {
+		isDay = false;
+		GLint isDayLoc = glGetUniformLocation(lightShader.Program, "isDay");
+		glUniform1f(isDayLoc, 0.0f);
+	}
+	//if !isDay and now y > 0 => isDay = true
+	else if (!isDay && y > 0) {
+		isDay = true;
+	}
+	else if (isDay & y > 0) {
+		GLint isDayLoc = glGetUniformLocation(lightShader.Program, "isDay");
+		glUniform1f(isDayLoc, y/6);
+
+	}
+}
+
+
+// Loads a cubemap texture from 6 individual texture faces
+// Order should be:
+// +X (right)
+// -X (left)
+// +Y (top)
+// -Y (bottom)
+// +Z (front)
+// -Z (back)
+GLuint loadCubemap(vector<const GLchar*> faces)
+{
+	GLuint textureID;
+	glGenTextures(1, &textureID);
+
+	int width, height;
+	unsigned char* image;
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	for (GLuint i = 0; i < faces.size(); i++)
+	{
+		image = stbi_load(faces[i], &width, &height, 0, STBI_rgb);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+		stbi_image_free(image);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+	return textureID;
+}

@@ -7,11 +7,12 @@ in vec3 FragPos;
 uniform vec3 lightPos; 
 uniform vec3 lightColor;
 uniform vec3 objectColor;
+uniform float isDay;
 
 void main()
 {
 	    // Ambient
-		float ambientStrength = 0.5f;
+		float ambientStrength = 0.2f + (0.10f * isDay);
 		vec3 ambient = ambientStrength * lightColor;
 
 		// Diffuse 

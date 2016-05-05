@@ -129,6 +129,7 @@
     <ClInclude Include="include\objects\Island.h" />
     <ClInclude Include="include\objects\LargeBlueButterFly.h" />
     <ClInclude Include="include\objects\LargeOrangeButterFly.h" />
+    <ClInclude Include="include\objects\OrangeWing.h" />
     <ClInclude Include="include\objects\SmallBlueButterfly.h" />
     <ClInclude Include="include\objects\SmallOrangeButterfly.h" />
     <ClInclude Include="include\objects\Windmill.h" />
@@ -139,7 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\lightShader.frag" />
-    <None Include="resources\shaders\shader.vs" />
+    <None Include="resources\shaders\lightShader.vs" />
     <None Include="resources\shaders\textureShader.frag" />
     <None Include="resources\shaders\textureShader.vs" />
   </ItemGroup>

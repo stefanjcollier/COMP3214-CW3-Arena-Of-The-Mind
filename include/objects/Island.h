@@ -6,7 +6,8 @@
 #include "GrassClump.h"
 #include "Ground.h"
 
-Ground ground(70.0f, 40, glm::vec3(0.1f, 1.0f, 0.1f));
+GLfloat groundWidth = 70.0f;
+Ground ground(groundWidth, 40, glm::vec3(0.1f, 1.0f, 0.1f));
 
 class Island {
 public:
@@ -32,6 +33,9 @@ public:
 		ground.kill();
 	}
 
+	GLfloat getWidth() {
+		return groundWidth;
+	}
 };
 
 #endif

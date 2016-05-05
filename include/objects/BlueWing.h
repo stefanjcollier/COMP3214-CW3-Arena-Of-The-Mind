@@ -86,10 +86,10 @@ private:
 	void populateDataAndIndices() {
 		//Right Wing
 		GLfloat x_off = 0.0;
-		this->addToData(x_off + 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+		this->addToData(x_off + 0.0f, 0.0f, 0.0f, 1.0f, 0.01f);
 		this->addToData(x_off + 0.0f, height, 0.0f, 1.0f, 1.0f);
-		this->addToData(x_off + width, height, 0.0f, 0.0f, 1.0f);
-		this->addToData(x_off + width, 0, 0.0f, 0.0f, 0.0f);
+		this->addToData(x_off + width, height, 0.0f, 0.01f, 1.0f);
+		this->addToData(x_off + width, 0, 0.0f, 0.01f, 0.01f);
 
 		this->addToIndexes(0, 1, 2);
 		this->addToIndexes(0, 3, 2);

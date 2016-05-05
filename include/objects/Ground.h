@@ -83,7 +83,7 @@ private:
 		for (GLuint znode = 0; znode < this->nodes; znode++) {
 				x = start + xnode*inc;
 				z = start + znode*inc;
-				y = this->getRand(0, 0.5);
+				y = this->getRand(0, 0.75);
 
 				this->addToData(x, y, z);
 

@@ -20,9 +20,16 @@ using namespace std;
 
 class Cube {
 public:
-	Cube(GLfloat w) {
-		width = w;
+	Cube(GLfloat w, glm::vec3 color) {
+		this->width = w;
+		this->baseColor = color;
 	}
+
+	Cube(GLfloat w) {
+		this->width = w;
+		this->baseColor = glm::vec3(1.0f,0.0f,0.0f);
+	}
+
 
 	/*
 	* Create the data
@@ -47,6 +54,15 @@ public:
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
 
+	void drawPlain(Shader shader) {
+		shader.Use();
+
+		//Draw the base
+		this->setColor(shader, this->baseColor);
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+	}
+
 	void kill() {
 		glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
@@ -60,8 +76,12 @@ private:
 
 	GLuint texture;
 	vector<GLfloat> data;
-
+	glm::vec3 baseColor;
 	
+	void setColor(Shader shader, glm::vec3 color) {
+		GLint objectColorLoc = glGetUniformLocation(shader.Program, "objectColor");
+		glUniform3f(objectColorLoc, color.x, color.y, color.z);
+	}
 
 
 	void populateData() {
