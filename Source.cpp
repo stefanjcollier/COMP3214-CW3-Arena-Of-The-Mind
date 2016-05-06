@@ -220,16 +220,6 @@ int main()
 	glBindVertexArray(0);
 
 	// Cubemap (Skybox)
-	vector<const GLchar*> faces;
-
-	faces.push_back("resources/skybox/right.jpg");
-	faces.push_back("resources/skybox/left.jpg");
-	faces.push_back("resources/skybox/top.jpg");
-	faces.push_back("resources/skybox/bottom.jpg");
-	faces.push_back("resources/skybox/back.jpg");
-	faces.push_back("resources/skybox/front.jpg");
-
-	prepSkyBox();
 
 	/**************************************************************
 	********************[  GAME LOOP ]*******************
@@ -358,6 +348,8 @@ int main()
 
 
 		// Draw skybox as last
+		prepSkyBox();
+
 		glDepthFunc(GL_LEQUAL);  // Change depth function so depth test passes when values are equal to depth buffer's content
 		skyboxShader.Use();
 		glm::mat4 skyview = glm::mat4(glm::mat3(camera.GetViewMatrix()));	// Remove any translation component of the view matrix
@@ -496,6 +488,7 @@ void handleDayOrNight(GLfloat y, Shader lightShader) {
 		glUniform1f(isDayLoc, y/6);
 
 	}
+
 }
 
 
@@ -532,10 +525,20 @@ GLuint loadCubemap(vector<const GLchar*> faces)
 	return textureID;
 }
 
-
+GLuint prevHour;
+GLfloat start = 6.0f;
 void prepSkyBox() {
+	GLfloat time = fmod(glfwGetTime()/3+start, 15)+1;
+	GLuint hour = time;
+
+	//If the hour hasn't changed since last time, quit
+	if (hour == prevHour) return;
+	printf("Time is now %d", hour);
+	prevHour = hour;
+
+	//Otherwise change the skybox
 	vector<const GLchar*> faces;
-	GLuint n = 6;
+	GLuint n = hour;
 	char right[100], left[100], up[100], down[100], front[100], back[100];
 		
 	snprintf(right, sizeof(right),	"resources/skybox/%d/sky%d_RT.jpg", n, n);
