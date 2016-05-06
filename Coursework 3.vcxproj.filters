@@ -31,6 +31,9 @@
     <Filter Include="Header Files\painting">
       <UniqueIdentifier>{84bc1ae5-094c-4c5f-893d-b9b4461827cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\flag">
+      <UniqueIdentifier>{713794f3-5275-4e70-a141-cf84e4a94f31}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -106,6 +109,12 @@
     </ClInclude>
     <ClInclude Include="include\objects\Showcase.h">
       <Filter>Header Files\painting</Filter>
+    </ClInclude>
+    <ClInclude Include="include\objects\Rectangle.h">
+      <Filter>Header Files\flag</Filter>
+    </ClInclude>
+    <ClInclude Include="include\objects\Flag.h">
+      <Filter>Header Files\flag</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

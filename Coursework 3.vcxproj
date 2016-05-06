@@ -126,6 +126,7 @@
     <ClInclude Include="include\objects\Case.h" />
     <ClInclude Include="include\objects\Cloud.h" />
     <ClInclude Include="include\objects\Cube.h" />
+    <ClInclude Include="include\objects\Flag.h" />
     <ClInclude Include="include\objects\Grass2D.h" />
     <ClInclude Include="include\objects\GrassClump.h" />
     <ClInclude Include="include\objects\Ground.h" />
@@ -134,6 +135,7 @@
     <ClInclude Include="include\objects\LargeOrangeButterFly.h" />
     <ClInclude Include="include\objects\OrangeWing.h" />
     <ClInclude Include="include\objects\Painting.h" />
+    <ClInclude Include="include\objects\Rectangle.h" />
     <ClInclude Include="include\objects\Showcase.h" />
     <ClInclude Include="include\objects\SmallBlueButterfly.h" />
     <ClInclude Include="include\objects\SmallOrangeButterfly.h" />

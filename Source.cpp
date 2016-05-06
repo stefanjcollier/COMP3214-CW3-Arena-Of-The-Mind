@@ -25,7 +25,6 @@
 #include "World.h"
 #include "stb_image.h"
 
-#include "Windmill.h"
 #include "Cube.h"
 
 #include "LargeOrangeButterFly.h"
@@ -35,8 +34,11 @@
 #include "ButterflyFlock.h"
 
 #include "Island.h"
+
+#include "Windmill.h"
 #include "AllClouds.h"
 #include "Showcase.h"
+#include "Flag.h"
 
 
 
@@ -64,6 +66,11 @@ bool showPos = true;
 
 // Light attributes
 glm::vec3 lightPos(50.0f, 100.0f, 2.0f);
+
+//Skybox stuff
+GLuint skyIndex = 0;
+void prepSkyBox();
+GLuint cubemapTexture;
 
 // Deltatime
 GLfloat deltaTime = 0.0f;	// Time between current frame and last frame
@@ -151,6 +158,9 @@ int main()
 	Showcase showcase;
 	showcase.instantiate();
 
+	Flag flag;
+	flag.instantiate();
+
 	/**************************************************************
 	********************[  Skybox ]*******************
 	***************************************************************/
@@ -219,7 +229,7 @@ int main()
 	faces.push_back("resources/skybox/back.jpg");
 	faces.push_back("resources/skybox/front.jpg");
 
-	GLuint cubemapTexture = loadCubemap(faces);
+	prepSkyBox();
 
 	/**************************************************************
 	********************[  GAME LOOP ]*******************
@@ -311,6 +321,7 @@ int main()
 			model1 = glm::translate(model1, pos);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model1));
 			windmill.draw(fancyLightShader);
+			flag.draw(fancyLightShader, glm::vec3(0.0f, 60.0f / 7, 0.0f), glm::vec3(0.0f, 0.0f, 0.75f));
 			lobutter.draw(textureShader, butter_offset, glm::radians(-8.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.7, 30);
 
 			fancyLightShader.Use();
@@ -319,6 +330,7 @@ int main()
 			model2 = glm::translate(model2, pos);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model2));
 			windmill.draw(fancyLightShader);
+			flag.draw(fancyLightShader, glm::vec3(0.0f, 60.0f / 7, 0.0f)+pos, glm::vec3(0.0f, 0.75f, 0.0f));
 			lbbutter.draw(textureShader, pos+butter_offset, 0.0f, glm::vec3(0.0f, 0.0f, 0.0f), 1.2, 0);
 
 
@@ -329,6 +341,7 @@ int main()
 			model3 = glm::translate(model3, pos);
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model3));
 			windmill.draw(fancyLightShader);
+			flag.draw(fancyLightShader, glm::vec3(0.0f, 60.0f / 7, 0.0f) + pos, glm::vec3(0.75f, 0.0f, 0.0f));
 			lbbutter.draw(textureShader, pos + butter_offset + adjustment, glm::radians(20.0f), glm::vec3(0.0f, 0.0f, 1.0f), 0.8, 40);
 
 			for (GLuint flock = 0; flock < flocks.size(); flock++) {
@@ -378,6 +391,7 @@ int main()
 	island.kill();
 	allcloud.kill();
 	showcase.kill();
+	flag.kill();
 
 	// Terminate GLFW, clearing any resources allocated by GLFW.
 	glfwTerminate();
@@ -516,4 +530,29 @@ GLuint loadCubemap(vector<const GLchar*> faces)
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 	return textureID;
+}
+
+
+void prepSkyBox() {
+	vector<const GLchar*> faces;
+	GLuint n = 6;
+	char right[100], left[100], up[100], down[100], front[100], back[100];
+		
+	snprintf(right, sizeof(right),	"resources/skybox/%d/sky%d_RT.jpg", n, n);
+	snprintf(left,	sizeof(left),	"resources/skybox/%d/sky%d_LF.jpg", n, n);
+	snprintf(up,	sizeof(up),		"resources/skybox/%d/sky%d_UP.jpg", n, n);
+	snprintf(down,	sizeof(down),	"resources/skybox/%d/sky%d_DN.jpg", n, n);
+	snprintf(front, sizeof(front),	"resources/skybox/%d/sky%d_BK.jpg", n, n);
+	snprintf(back,	sizeof(back),	"resources/skybox/%d/sky%d_FR.jpg", n, n);
+
+	printf("%s\n",right);
+	faces.push_back(right);//right.jpg");
+	faces.push_back(left);//right.jpg");
+	faces.push_back(up);//right.jpg");
+	faces.push_back(down);//right.jpg");
+	faces.push_back(back);//right.jpg");
+	faces.push_back(front);//right.jpg");
+
+	cubemapTexture = loadCubemap(faces);
+
 }
